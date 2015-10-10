@@ -1,0 +1,5 @@
+menuentry "OS365" {
+	multiboot /boot/os365.bin
+	set gfxpayload=1024x768x32
+	boot
+}
