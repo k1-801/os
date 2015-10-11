@@ -26,13 +26,13 @@ void kernel_main()
 {
 	//	addr = (int*) kernel_main;
 	//
-	log("OS365 kernel is started. Disabling interrupts...");
+	log("[LOAD] OS365 kernel is started. Disabling interrupts...");
 	asm("cli");
 	log("done.");
 	//idt_install();
 	//isrs_install();
 	//asm("sti");
-	log("Setting up fonts...");
+	log("[INFO] Setting up fonts...");
 	setupFonts();
 	log("done.");
 	//kprint("OS365 Kernel 1.0 is loaded.\nInitializing PIC...",0,0);
@@ -46,8 +46,9 @@ void kernel_main()
 	while(true)
 	{
 		shellStart();
-		log("Error in program: Not returned to Z");
-		log("Getting back to Z...");
+		fRun=true;
+		log("[WARNING] Error in program: Not returned to Z");
+		log("[INFO] Getting back to Z...");
 	}
 }
 #ifdef __cplusplus

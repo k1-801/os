@@ -13,6 +13,7 @@
 #include "fs.h"
 #include "cmos.h"
 #include "assert.h"
+#include "klog.h"
 //#include "sprites.h"
 #define MAX_COMMANDS 100
 #define paste(front,back) front ## back
@@ -303,6 +304,7 @@ void reboot()
 void fsinit();
 void clock()
 {
+	log("[USER] Started program: Clock");
 	drawmain();
 	//drawWallpaper();
 	bool endofmin=false;
@@ -338,7 +340,7 @@ void clock()
 			c = inb(0x60);
 			if(c>0)
 			{
-				if(scancodetochar(c)=='x')
+				if(c==1)
 				{
 					delWin(clock);
 					startZ(true);
@@ -348,12 +350,34 @@ void clock()
 	}
 	while(c!=1);
 }
+void showLogs()
+{
+	setupFonts();
+	int i=0;
+	//int 
+	log("[USER] Started program: Log Viewer");
+	setGraphicsMode();
+	vgaWriteStr(0,0,"System logs of OS365. Press X to exit.",WHITE,BLACK);
+	char c=0;
+	do
+	{
+		c=inb(0x60);
+		i=0;
+		for(int j=0;i<2048&&i<lnum;i++,j++)
+		{
+			vgaWriteStr(0,8+j*8,logs[i],WHITE,BLACK);
+		}
+	}while(c!=charToScancode('x'));
+	if(currLang==LANG_RUS)
+	setRusFonts();
+	fRun=true;
+	startZ(true);
+}
 void textEdit()
 {
+	log("[USER] Started program: Text Editor");
 	drawmain();
 	//drawWallpaper();
-	char *gtg="fjdsfhkdshfnkjsdnfjk";
-	memcpy((void*)0xb800,(void*)&gtg,12000);
 	int curposX = 0;
 	int curposY = 1;
 	int charNum = 0;
@@ -364,6 +388,7 @@ void textEdit()
 	drawObj(editor);
 	//drawBitmap(fatalerror,15,16,16,16,BLACK,LIGHT_GREY,LIGHT_GREEN,LIGHT_BLUE,RED);
 	vgaWriteStr(editor.x+5,editor.y+21,tNames[LANG_RUS][LC_EDITORTIPS],MAGENTA,LIGHT_GREY);
+	//showLogs();
 	do
 	{
 		if(inb(0x60)!=c)
@@ -469,6 +494,7 @@ void displayColorSet(word x, word y)
 }
 void about()
 {
+	log("[USER] Started program: OS Info");
 	drawmain();
 	//drawWallpaper();
 	window info(540,80,40,30,tNames[LANG_RUS][LC_NAME_OSINFO],"");
@@ -493,6 +519,7 @@ void about()
 }
 void authors()
 {
+	log("[USER] Started program: Authors");
 	drawmain();
 	//drawWallpaper();
 	window authors(500,120,40,30,tNames[LANG_RUS][LC_NAME_AUTHORS],"");
@@ -617,6 +644,7 @@ void calc()
 pgdn 0xd1
 void wallColor()
 {
+	log("[USER] Started program: Wallpaper Changing");
 	drawmain();
 	//drawWallpaper();
 	window wcolor(430,40,20,20,tNames[LANG_RUS][LC_NAME_WPCOLOR],"");
@@ -633,22 +661,22 @@ void wallColor()
 			{
 				switch(scancodetochar(c))
 				{
-				case '0': BGCOLOR=0; delWin(wcolor); setGraphicsMode(); startZ(true);
-				case '1': BGCOLOR=1; fRun=true; delWin(wcolor); startZ(true);
-				case '2': BGCOLOR=2; fRun=true; delWin(wcolor); startZ(true);
-				case '3': BGCOLOR=3; fRun=true; delWin(wcolor); startZ(true);
-				case '4': BGCOLOR=4; fRun=true; delWin(wcolor); startZ(true);
-				case '5': BGCOLOR=5; fRun=true; delWin(wcolor); startZ(true);
-				case '6': BGCOLOR=6; fRun=true; delWin(wcolor); startZ(true);
-				case '7': BGCOLOR=7; fRun=true; delWin(wcolor); startZ(true);
-				case '8': BGCOLOR=8; fRun=true; delWin(wcolor); startZ(true);
-				case '9': BGCOLOR=9; fRun=true; delWin(wcolor); startZ(true);
-				case 'a': BGCOLOR=10; fRun=true; delWin(wcolor); startZ(true);
-				case 'b': BGCOLOR=11; fRun=true; delWin(wcolor); startZ(true);
-				case 'c': BGCOLOR=12; fRun=true; delWin(wcolor); startZ(true);
-				case 'd': BGCOLOR=13; fRun=true; delWin(wcolor); startZ(true);
-				case 'e': BGCOLOR=14; fRun=true; delWin(wcolor); startZ(true);
-				case 'f': BGCOLOR=15; fRun=true; delWin(wcolor); startZ(true);
+				case '0': BGCOLOR=0; log("[USER] Wallpaper changed to Black"); delWin(wcolor); setGraphicsMode(); startZ(true);
+				case '1': BGCOLOR=1; log("[USER] Wallpaper changed to Blue"); fRun=true; delWin(wcolor); startZ(true);
+				case '2': BGCOLOR=2; log("[USER] Wallpaper changed to Green"); fRun=true; delWin(wcolor); startZ(true);
+				case '3': BGCOLOR=3; log("[USER] Wallpaper changed to Cyan"); fRun=true; delWin(wcolor); startZ(true);
+				case '4': BGCOLOR=4; log("[USER] Wallpaper changed to Red"); fRun=true; delWin(wcolor); startZ(true);
+				case '5': BGCOLOR=5; log("[USER] Wallpaper changed to Magenta"); fRun=true; delWin(wcolor); startZ(true);
+				case '6': BGCOLOR=6; log("[USER] Wallpaper changed to Brown"); fRun=true; delWin(wcolor); startZ(true);
+				case '7': BGCOLOR=7; log("[USER] Wallpaper changed to Light Grey"); fRun=true; delWin(wcolor); startZ(true);
+				case '8': BGCOLOR=8; log("[USER] Wallpaper changed to Dark Grey"); fRun=true; delWin(wcolor); startZ(true);
+				case '9': BGCOLOR=9; log("[USER] Wallpaper changed to Light Blue"); fRun=true; delWin(wcolor); startZ(true);
+				case 'a': BGCOLOR=10; log("[USER] Wallpaper changed to Light Green"); fRun=true; delWin(wcolor); startZ(true);
+				case 'b': BGCOLOR=11; log("[USER] Wallpaper changed to Light Cyan"); fRun=true; delWin(wcolor); startZ(true);
+				case 'c': BGCOLOR=12; log("[USER] Wallpaper changed to Light Red"); fRun=true; delWin(wcolor); startZ(true);
+				case 'd': BGCOLOR=13; log("[USER] Wallpaper changed to Light Magenta"); fRun=true; delWin(wcolor); startZ(true);
+				case 'e': BGCOLOR=14; log("[USER] Wallpaper changed to Yellow"); fRun=true; delWin(wcolor); startZ(true);
+				case 'f': BGCOLOR=15; log("[USER] Wallpaper changed to White"); fRun=true; delWin(wcolor); startZ(true);
 				}
 			}
 		}
@@ -657,6 +685,7 @@ void wallColor()
 }
 void graphicsEdit()
 {
+	log("[USER] Started program: Graphics Editor");
 	drawmain();
 	//drawWallpaper();
 	window os365brush(350,300,50,50,tNames[LANG_RUS][LC_GREDITTITLE],"");
@@ -711,7 +740,8 @@ void graphicsEdit()
 }
 void gomenu()
 {
-	window goMenu(140,200,0,272,tNames[LANG_RUS][LC_NAME_GOMENU],"");
+	log("[USER] Started program: Go! Menu");
+	window goMenu(148,200,0,272,tNames[LANG_RUS][LC_NAME_GOMENU],"");
 	drawObj(goMenu,false);
 	//drawWallpaper();
 	int selection = 1;
@@ -724,6 +754,7 @@ void gomenu()
 	vgaWriteStr(goMenu.x+5,goMenu.y+61,tNames[LANG_RUS][LC_NAME_GREDIT],MAGENTA,LIGHT_GREY);
 	vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_WPCOLOR],MAGENTA,LIGHT_GREY);
 	vgaWriteStr(goMenu.x+5,goMenu.y+77,tNames[LANG_RUS][LC_NAME_CLOCK],MAGENTA,LIGHT_GREY);
+	vgaWriteStr(goMenu.x+5,goMenu.y+86,tNames[LANG_RUS][LC_NAME_LVIEW],MAGENTA,LIGHT_GREY);
 	//vgaWriteStr(goMenu.x+5,goMenu.y+77,"CLOCK",MAGENTA,LIGHT_GREY);
 	vgaWriteStr(goMenu.x+5,goMenu.y+21,tNames[LANG_RUS][LC_NAME_OSINFO],LIGHT_GREY,MAGENTA);
 	//printw("test\ntewlines\nmasrkovka\nkostya puknum",goMenu);
@@ -746,6 +777,7 @@ void gomenu()
 					vgaWriteStr(goMenu.x+5,goMenu.y+61,tNames[LANG_RUS][LC_NAME_GREDIT],MAGENTA,LIGHT_GREY);
 					vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_WPCOLOR],MAGENTA,LIGHT_GREY);
 					vgaWriteStr(goMenu.x+5,goMenu.y+77,tNames[LANG_RUS][LC_NAME_CLOCK],MAGENTA,LIGHT_GREY);
+					vgaWriteStr(goMenu.x+5,goMenu.y+86,tNames[LANG_RUS][LC_NAME_LVIEW],MAGENTA,LIGHT_GREY);
 					switch(selection)
 					{
 					case 1: vgaWriteStr(goMenu.x+5,goMenu.y+21,tNames[LANG_RUS][LC_NAME_OSINFO],LIGHT_GREY,MAGENTA); break;
@@ -755,13 +787,15 @@ void gomenu()
 					case 5: vgaWriteStr(goMenu.x+5,goMenu.y+53,tNames[LANG_RUS][LC_NAME_EDITOR],LIGHT_GREY,MAGENTA); break;
 					case 6: vgaWriteStr(goMenu.x+5,goMenu.y+61,tNames[LANG_RUS][LC_NAME_GREDIT],LIGHT_GREY,MAGENTA); break;
 					case 7: vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_WPCOLOR],LIGHT_GREY,MAGENTA);break;
-					case 8: vgaWriteStr(goMenu.x+5,goMenu.y+77,tNames[LANG_RUS][LC_NAME_CLOCK],LIGHT_GREY,MAGENTA);
+					case 8: vgaWriteStr(goMenu.x+5,goMenu.y+77,tNames[LANG_RUS][LC_NAME_CLOCK],LIGHT_GREY,MAGENTA);break;
+					case 9: vgaWriteStr(goMenu.x+5,goMenu.y+86,tNames[LANG_RUS][LC_NAME_LVIEW],LIGHT_GREY,MAGENTA);
+
 					}
 				}
 			}
 			if(c==0x50)
 			{
-				if(selection<8)
+				if(selection<9)
 				{
 					selection++;
 					vgaWriteStr(goMenu.x+5,goMenu.y+21,tNames[LANG_RUS][LC_NAME_OSINFO],MAGENTA,LIGHT_GREY);
@@ -772,6 +806,7 @@ void gomenu()
 					vgaWriteStr(goMenu.x+5,goMenu.y+61,tNames[LANG_RUS][LC_NAME_GREDIT],MAGENTA,LIGHT_GREY);
 					vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_WPCOLOR],MAGENTA,LIGHT_GREY);
 					vgaWriteStr(goMenu.x+5,goMenu.y+77,tNames[LANG_RUS][LC_NAME_CLOCK],MAGENTA,LIGHT_GREY);
+					vgaWriteStr(goMenu.x+5,goMenu.y+86,tNames[LANG_RUS][LC_NAME_LVIEW],MAGENTA,LIGHT_GREY);
 					switch(selection)
 					{
 					case 1: vgaWriteStr(goMenu.x+5,goMenu.y+21,tNames[LANG_RUS][LC_NAME_OSINFO],LIGHT_GREY,MAGENTA); break;
@@ -781,7 +816,9 @@ void gomenu()
 					case 5: vgaWriteStr(goMenu.x+5,goMenu.y+53,tNames[LANG_RUS][LC_NAME_EDITOR],LIGHT_GREY,MAGENTA); break;
 					case 6: vgaWriteStr(goMenu.x+5,goMenu.y+61,tNames[LANG_RUS][LC_NAME_GREDIT],LIGHT_GREY,MAGENTA); break;
 					case 7: vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_WPCOLOR],LIGHT_GREY,MAGENTA);break;
-					case 8: vgaWriteStr(goMenu.x+5,goMenu.y+77,tNames[LANG_RUS][LC_NAME_CLOCK],LIGHT_GREY,MAGENTA);
+					case 8: vgaWriteStr(goMenu.x+5,goMenu.y+77,tNames[LANG_RUS][LC_NAME_CLOCK],LIGHT_GREY,MAGENTA);break;
+					case 9: vgaWriteStr(goMenu.x+5,goMenu.y+86,tNames[LANG_RUS][LC_NAME_LVIEW],LIGHT_GREY,MAGENTA);
+
 					}
 				}
 			}
@@ -824,10 +861,15 @@ void gomenu()
 	{
 	clock(); break;
 	}
+	case 9:
+	{
+	showLogs(); break;
+	}
 	}
 }
 void help()
 {
+	log("[USER] Started program: Help");
 	drawmain();
 	window help(639,460,-1,8,tNames[LANG_RUS][LC_NAME_HELP],"");
 	drawObj(help);
@@ -970,7 +1012,7 @@ void help()
 				j++;
 				vgaWriteStr(0,j*8,"I can't list their names, because it will be so big.",LIGHT_CYAN,BLACK);
 				j++;
-				vgaWriteStr(0,j*8,"OS365 1.0.6.",LIGHT_CYAN,BLACK);
+				vgaWriteStr(0,j*8,"OS365 1.0.7.",LIGHT_CYAN,BLACK);
 				j++;
 
 				vgaWriteStr(0,j*8,"By Byte PowerSoft.",LIGHT_CYAN,BLACK);
@@ -1005,8 +1047,32 @@ void help()
 	delWin(help);
 	startZ(true);
 }
+char *translateTable[2][128];
+char desktopTranslate(char c)
+{
+	return translateTable[currLang][c];
+}
+void setupDeskTranslations()
+{
+	translateTable[LANG_ENG]['a']='a';
+	translateTable[LANG_ENG]['o']='o';
+	translateTable[LANG_ENG]['t']='t';
+	translateTable[LANG_ENG]['g']='g';
+	translateTable[LANG_ENG]['l']='l';
+	translateTable[LANG_ENG]['c']='c';
+	translateTable[LANG_RUS]['a']='f';
+	translateTable[LANG_RUS]['o']='b';
+	translateTable[LANG_RUS]['t']='3';
+	translateTable[LANG_RUS]['g']='r';
+	translateTable[LANG_RUS]['l']='z';
+	translateTable[LANG_RUS]['c']='x';
+
+}
 void startZ(bool startwin)
 {
+	setupDeskTranslations();
+	if(fRun)
+	log("[INFO] Z Window System is started or reloaded.");
 	setupLocale();
 	terminal_setcolor(COLOR_LIGHT_GREY + COLOR_BLACK);
 	z_init();
@@ -1026,23 +1092,23 @@ void startZ(bool startwin)
 			{
 				gomenu();
 			}
-			if(c == charToScancode('a'))
+			if(c == charToScancode(desktopTranslate('a')))
 			{
 				authors();
 			}
-			if(c == charToScancode('o'))
+			if(c == charToScancode(desktopTranslate('o')))
 			{
 				about();
 			}
-			if(c == charToScancode('t'))
+			if(c == charToScancode(desktopTranslate('t')))
 			{
 				textEdit();
 			}
-			if(c == charToScancode('g'))
+			if(c == charToScancode(desktopTranslate('g')))
 			{
 				graphicsEdit();
 			}
-			if(c == charToScancode('l'))
+			if(c == charToScancode(desktopTranslate('l')))
 			{
 				if(currLang==LANG_RUS)
 				{
@@ -1054,7 +1120,7 @@ void startZ(bool startwin)
 				else {
 				setRusFonts();
 				currLang=LANG_RUS;
-				//scancode="   1234567890-=^^jcukeng#\\zhq\n^fwvaproldyW'`  x$smitQbY/^*^   ^^^^^^^^^^^^^^789-456+1230.^^   !@#$%^&*()_+^^JCUKENG#\\ZHQ\n^FWVAPROLDYW:'^    X$SMITQBY?^*^   ^^^^^^^^^^^^^^&*(_$%^+!@#)>^^";
+				//scancode="  1234567890-=^jcukeng#\\zhq\n^fwvaproldyW'`  x$smitQbY/^*^   ^^^^^^^^^^^^^^789-456+1230.^^   !@#$%^&*()_+^^JCUKENG#\\ZHQ\n^FWVAPROLDYW:'^    X$SMITQBY?^*^   ^^^^^^^^^^^^^^&*(_$%^+!@#)>^^";
 				startZ(true);
 				}
 			}
@@ -1062,7 +1128,7 @@ void startZ(bool startwin)
 			{
 				help();
 			}
-			if(c==charToScancode('c'))
+			if(c==charToScancode(desktopTranslate('c')))
 			{
 				clock();
 			}

@@ -75,6 +75,7 @@ int findLocEntry(char *nameToTranslate)
 #define LC_NAME_HELP35		56
 #define LC_NAME_HELP36		57
 #define LC_NAME_HELP		58
+#define LC_NAME_LVIEW		59
 
 int currLang=LANG_ENG;
 char *tNames[1024][2]/*={{"OS Info","Reboot","Test panic","365 Editor","365 Brush"},{"Informacix ob OS","Perezagruzka","Test paniki","365 Redaktor","KistX 365"}};*/;
@@ -128,7 +129,7 @@ tNames[1][33]="There is a many programs to use. All list is: Clock, Text Editor,
 tNames[1][34]="ics Editor, OS Info, Authors, wallpaper color.";
 tNames[1][35]="ALL PROGRAMS TOUR";
 tNames[1][36]="Clock";
-tNames[1][37]="Displays time. Currently has bugs. X to exit.";
+tNames[1][37]="Displays time. Currently has bugs. ESC to exit.";
 tNames[1][38]="Graphics Editor";
 tNames[1][39]="Use arrow keys and SPACE to draw. ESC";
 tNames[1][40]="to exit.";
@@ -150,6 +151,7 @@ tNames[1][55]="";
 tNames[1][56]="";
 tNames[1][57]="H     i     n     t          F          4";
 tNames[1][58]="OS365 Help System";
+tNames[1][59]="System Log Viewer";
 
 }
 else {
@@ -191,7 +193,7 @@ tNames[1][34]="tor, Tekstovwj redaktor, Informacix ob OS, $asw i Avtorw.";
 tNames[1][35]="Grafi$eskij redaktor";
 tNames[1][36]="PolQzujtesQ strelkami i probelom dlx risovanix.@ESC|dlx vwhoda.";
 tNames[1][37]="$asw";
-tNames[1][38]="PokazwvaYt vremx. Poka $to s bagami. H dlx vwhoda.";
+tNames[1][38]="PokazwvaYt vremx. Poka $to s bagami.@ESC|dlx vwhoda.";
 tNames[1][39]="Tekstovwj redaktor";
 tNames[1][40]="Vvod teksta s rabotaY\\im@Caps Lock. F5|dlx vwhoda.";
 tNames[1][41]="Informacix ob OS";
@@ -212,7 +214,7 @@ tNames[1][55]="";
 tNames[1][56]="";
 tNames[1][57]="";
 tNames[1][58]="Pomo\\Q@OS365|";
-
+tNames[1][59]="Sistemnwj yurnal";
 }
 }
 #endif
