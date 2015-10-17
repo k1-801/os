@@ -1,2 +1,3 @@
 # os
-OS365
+OS365 is a small OS.
+More on os365dev.tk
