@@ -23,16 +23,16 @@ void panic(const char* msg)
 	log(msg);
 	log("[INFO] Writing message to the screen...");
 	//write the message
-	vgaWriteStr(0,0,"Kernel panic: ",LIGHT_RED,BLACK);
-	vgaWriteStr(14*8,0,msg,LIGHT_RED,BLACK);
+	vgaWriteStr(0,0,"Kernel panic: ",LIGHT_GREY,BLACK);
+	vgaWriteStr(14*8,0,msg,LIGHT_GREY,BLACK);
 	vgaWriteStr(0,8,"Please restart your computer.",LIGHT_RED,BLACK);
 	log("[INFO] Writing last 50 log strings...");
 	log("[HALT] Halting.");
-	vgaWriteStr(0,16,"Last 50 system log messages:",LIGHT_RED,BLACK);
-	int i=0;
-	for(int j=0;i<50&&i<lnum;i++,j++)
+	vgaWriteStr(0,16,"Last 50 system log messages:",LIGHT_GREY,BLACK);
+	int i=lnum-((lnum<50) ? lnum : 50);
+	for(int j=0;i<lnum;i++,j++)
 	{
-		vgaWriteStr(0,24+j*8,logs[i],LIGHT_RED,BLACK);
+		vgaWriteStr(0,24+j*8,logs[i],LIGHT_GREY,BLACK);
 	}
 //vgaWriteStr(240,24,itoa(eip),LIGHT_RED,BLACK);
 

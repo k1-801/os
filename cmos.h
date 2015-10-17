@@ -1,4 +1,6 @@
-#define CURRENT_YEAR        2014                            // Change this each year!
+#ifndef __CMOS_H
+#define __CMOS_H
+#define CURRENT_YEAR        2015                            // Change this each year!
 #include "io.h"
 int century_register = 0x00;                                // Set by ACPI table parsing code if possible
  
@@ -102,3 +104,4 @@ void read_rtc() {
             if(year < CURRENT_YEAR) year += 100;
       }
 }
+#endif

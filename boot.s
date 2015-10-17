@@ -1,7 +1,8 @@
 cli
 .set ALIGN,	1<<0
 .set MEMINFO,	1<<1
-.set FLAGS,	ALIGN | MEMINFO
+.set GRAPH,     1<<2
+.set FLAGS,	ALIGN | MEMINFO | GRAPH
 .set MAGIC,	0x1BADB002
 .set CHECKSUM, 	-(MAGIC + FLAGS)
 .align 4
@@ -21,6 +22,7 @@ stack_top:
 _start:
 cli
 movl $stack_top, %esp
+push %ebx
 call kernel_main
 hlt
 

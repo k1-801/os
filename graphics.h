@@ -4,6 +4,7 @@
 #include "fonts.h"
 //#include "types.h"
 #include "string.h"
+#include "klog.h"
 size_t vgaCol = 0;
 size_t vgaRow = 0;
 const size_t scrH = 40;
@@ -13,6 +14,7 @@ word y = 0;
 bool textMode = false;
 bool settedMode=false;
 //constants
+bool mSet;
 #define min(a,b) (a<b) ? a : b
 #define VGA_CRT 0              //CRT set
 #define VGA_ACT 1              //attribute controller set
@@ -84,6 +86,7 @@ bool settedMode=false;
 #define VGA__DAC_ADDR_W 0x3c8  //pallete, write address
 #define VGA__DAC_DATA 0x3c9    //pallete, data
 #define VGA__DAC_MASK 0x3c6    //pallete, bit mask
+vbe_info_t vbeMode;
 enum colors
 {
 	BLACK = 0,
@@ -814,9 +817,19 @@ byte VGAMode(byte m,word w,word h,byte o)
 //x,y=pixel coordinates
 //color=pixel color
 //w,h=screen dimensions
-inline void VGAPix16(word x,word y,byte color,word w,word h)
+/*struct VRAMPlanarEntry {
+	uint8_t pix1 : 4;
+	uint8_t pix2 : 4;
+	uint8_t pix3 : 4;
+	uint8_t pix4 : 4;
+
+}__attribute__((__packed__));
+struct VRAMPlanarEntry *vram=(struct VRAMPlanarEntry*)0xA000;*/
+uint32_t *framebuffer;
+uint8_t *vram=(uint8_t*)0xA0000;
+inline void VGAPix16(word x,word y,uint32_t color,word w,word h)
 {
-   byte*v=(byte*)0xa0000;
+   /*byte*v=(byte*)0xa0000;
    dword off;
    int plane;
    byte mask;
@@ -832,11 +845,37 @@ inline void VGAPix16(word x,word y,byte color,word w,word h)
          *v|=mask;
       else
          *v&=~mask;
+   }*/
+   /*
+   //More fast code:
+   //First, see if we are getting too long.
+   if(x>w||y>h) //if we are not in screen area
+   return;//do nothing
+   //Now see, what pixel we need in 1 byte.
+   unsigned long pixNum=y*w+x;
+   //Now get number of byte in VRAM.
+   unsigned long byteInVRAM=(pixNum-(pixNum%4));
+   //Now get the position in byte.
+   uint8_t pixPos=pixNum%4;
+   //And now finally really put pixel in the memory.
+   //BEcause we have 4 bitplanes, we need switch.
+   switch(pixPos)
+   {
+	   case 0: vram[byteInVRAM].pix1=color; break;
+	   case 1: vram[byteInVRAM].pix2=color; break;
+	   case 2: vram[byteInVRAM].pix3=color; break;
+	   case 3: vram[byteInVRAM].pix4=color; break;
    }
-   
+   //Job done.
+   return;*/
+   unsigned long pixindex=y*vbeMode.pitch + x*2;
+   framebuffer[pixindex+0]=color & 255;
+   framebuffer[pixindex+1]=(color >> 8) & 255;
+   framebuffer[pixindex+2]=(color >> 16) & 255;
+
 }
 bool changed=false;
-void vgaPutchar(char c,word x,word y,byte fg,byte bg)
+void vgaPutchar(char c,word x,word y,uint32_t fg,uint32_t bg)
 {
 	int i,j;
 	i = 0;
@@ -873,7 +912,7 @@ void vgaPutchar(char c,word x,word y,byte fg,byte bg)
 		i++;
 	}
 }
-void vgaWriteStr(word x,word y,const char * str,byte fg,byte bg)
+void vgaWriteStr(word x,word y,const char * str,uint32_t fg,uint32_t bg)
 {
 	word oldx=x;
 	for(int i; i != strlen(str); i++)
@@ -931,7 +970,7 @@ void vgaWriteStr(word x,word y,const wchar_t * str,byte fg,byte bg)
 		x = x+8;
 	}
 }*/
-void putpix(byte color)
+void putpix(uint32_t color)
 {
 	VGAPix16(x,y,0xf0,640,480);
 	if(++x == 640)
@@ -954,7 +993,7 @@ char a[] = "00000000\n\
 01000010\n\
 01000010";
 //infinite test = 38498049;
-void hLine(word x1,word y1,word length,byte color)
+void hLine(word x1,word y1,word length,uint32_t color)
 {
 	word i;
 	while(i != length)
@@ -964,7 +1003,7 @@ void hLine(word x1,word y1,word length,byte color)
 		VGAPix16(x1,y1,color,640,480);
 	}
 }
-void drawLine(word x1,word y1,word x2,word y2,byte color)
+void drawLine(word x1,word y1,word x2,word y2,uint32_t color)
 {
 	word i=0,j=0;
 	while(i<(y2-y1))
@@ -978,7 +1017,7 @@ void drawLine(word x1,word y1,word x2,word y2,byte color)
 		i++;
 	}
 }
-void vLine(word x1,word y1,word length,byte color)
+void vLine(word x1,word y1,word length,uint32_t color)
 {
 	int i;
 	while(i != length)
@@ -992,14 +1031,14 @@ char bitmap[] = "10101010\
 10101010\
 10101010\
 10101010";
-void drawRect(word w,word h, word x_, word y_, byte color)
+void drawRect(word w,word h, word x_, word y_, uint32_t color)
 {
 	vLine(x_,y_,w,color);
 	hLine(x_,y_,h,color);
 	vLine(x_,y_+h,w,color);
 	hLine(x_,y_+h,h,color);
 }
-void fillRect(word w,word h, word x_, word y_, byte color)
+void fillRect(word w,word h, word x_, word y_, uint32_t color)
 {
 	word w_=w,h_=h,x=x_,y=y_,i=0;
 	while(i!=h)
@@ -1008,7 +1047,7 @@ void fillRect(word w,word h, word x_, word y_, byte color)
 		i++;
 	}
 }
-void drawBitmap(char bm[],word x,word y,word width,word height,byte bg,byte c1,byte c2,byte c3,byte c4,int scale=1)
+void drawBitmap(char bm[],word x,word y,word width,word height,uint32_t bg,uint32_t c1,uint32_t c2,uint32_t c3,uint32_t c4,int scale=1)
 {
 	int i,j;
 	//int sc1=0,sc2=0;
@@ -1109,17 +1148,21 @@ void drawBitmap(char bm[],word x,word y,word width,word height)
 		i++;
 	}
 }
-void clrscr(byte color)
+void clrscr(uint32_t color)
 {
 	fillRect(640,480,0,0,color);
 }
 void setGraphicsMode()
 {
-	    textMode = false;
-            VGAMode(2,640,480,0);//set 640*480 at 16 colors //2
-            //VGASetFont(FONT,fonteight,0,256);//this only in text mode to set the font
-            //VGACursor(0);//this only in text mode in case you want to disable the cursor
-            VGASetPal(PAL16,0,16);//set the pallete
+	if(!mSet)log("[INFO] Calling VGAMode...");
+    VGAMode(2,640,480,0);//set 640*480 at 16 colors //2
+    if(!mSet)log("[INFO] Set standard VGA mode 640x480 with 16 colors.");
+    //VGASetFont(FONT,fonteight,0,256);//this only in text mode to set the font
+    //VGACursor(0);//this only in text mode in case you want to disable the cursor
+    if(!mSet)log("[INFO] Setting palette...");
+    VGASetPal(PAL16,0,16);//set the pallete
+    if(!mSet)log("done.");
+    mSet=true;
 }
 void textModeOn()
 {
