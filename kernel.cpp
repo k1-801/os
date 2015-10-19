@@ -25,7 +25,7 @@ extern "C" {
 #if defined(__linux__)
 #error "Compiling is not allowed without the cross-compiler"
 #endif
-void kernel_main(struct multiboot *mbinfo)
+void kernel_main(struct mboot_info_struct *mbinfo)
 {
 	//	addr = (int*) kernel_main;
 	//
@@ -60,8 +60,13 @@ void kernel_main(struct multiboot *mbinfo)
 	//sleep(18);
 	//setGraphicsMode();
 	vbe_info_t* vbeInfo=(vbe_info_t*)(*mbinfo).vbe_mode;
-	framebuffer=(uint32_t*)(*vbeInfo).physbase;
-	vbeMode=*vbeInfo;
+	framebuffer=(uint8_t*)(*mbinfo).framebuffer_addr;
+	//mbinfostruct=*mbinfo;
+	fbpitch=(*mbinfo).framebuffer_pitch;
+	fbbpp=(*mbinfo).framebuffer_bpp;
+
+	//memset((void*)framebuffer,0x004DFF,1024*768*3);
+	initKbd();
 	log("done.");
 	//mouse_install();
 	log("[INFO] Setting up the timer...");

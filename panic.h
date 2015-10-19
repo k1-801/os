@@ -14,7 +14,7 @@ void panic(const char* msg)
 {
 	setupFonts();
 	//make beautiful screen filter
-	memcpy((void*)0xA0000,(void*)0xB800,(640*480)/4);
+	memcpy((void*)framebuffer,(void*)0x0,(1024*768*3)/1);
 	memcpy((void*)0xA3000,(void*)0xBB00,(640*480)/4);
 	memcpy((void*)0xA6000,(void*)0xBE00,(640*480)/4);
 	memcpy((void*)0xA9000,(void*)0xBF10,(640*480)/4);

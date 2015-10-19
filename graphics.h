@@ -5,6 +5,7 @@
 //#include "types.h"
 #include "string.h"
 #include "klog.h"
+#include "mboot.h"
 size_t vgaCol = 0;
 size_t vgaRow = 0;
 const size_t scrH = 40;
@@ -90,21 +91,21 @@ vbe_info_t vbeMode;
 enum colors
 {
 	BLACK = 0,
-	BLUE = 1,
-	GREEN = 2,
-	CYAN = 3,
-	RED = 4,
-	MAGENTA = 5,
-	BROWN = 6,
-	LIGHT_GREY = 7,
-	DARK_GREY = 8,
-	LIGHT_BLUE = 9,
-	LIGHT_GREEN = 10,
-	LIGHT_CYAN = 11,
-	LIGHT_RED = 12,
-	LIGHT_MAGENTA = 13,
-	LIGHT_BROWN = 14,
-	WHITE = 15,
+	BLUE = 0x0000EE,
+	GREEN = 0x00EE00,
+	CYAN = 0x33EE33,
+	RED = 0xEE0000,
+	MAGENTA = 0x770077,
+	BROWN = 0x964B00,
+	LIGHT_GREY = 0xAAAAAA,
+	DARK_GREY = 0x777777,
+	LIGHT_BLUE = 0x0000FF,
+	LIGHT_GREEN = 0x00FF00,
+	LIGHT_CYAN = 0xFFEEFF,
+	LIGHT_RED = 0xFF0000,
+	LIGHT_MAGENTA = 0xDD00DD,
+	LIGHT_BROWN = 0xffff00,
+	WHITE = 0xFFFFFF,
 };
 //VGA register structure
 typedef struct
@@ -825,10 +826,8 @@ byte VGAMode(byte m,word w,word h,byte o)
 
 }__attribute__((__packed__));
 struct VRAMPlanarEntry *vram=(struct VRAMPlanarEntry*)0xA000;*/
-uint32_t *framebuffer;
+uint8_t *framebuffer;
 uint8_t *vram=(uint8_t*)0xA0000;
-inline void VGAPix16(word x,word y,uint32_t color,word w,word h)
-{
    /*byte*v=(byte*)0xa0000;
    dword off;
    int plane;
@@ -868,11 +867,14 @@ inline void VGAPix16(word x,word y,uint32_t color,word w,word h)
    }
    //Job done.
    return;*/
-   unsigned long pixindex=y*vbeMode.pitch + x*2;
-   framebuffer[pixindex+0]=color & 255;
-   framebuffer[pixindex+1]=(color >> 8) & 255;
-   framebuffer[pixindex+2]=(color >> 16) & 255;
-
+  uint32_t fbpitch;
+  uint8_t fbbpp;
+inline void VGAPix16(word x,word y,uint32_t color,word w,word h)
+{
+	unsigned where = x*(fbbpp/8) + y*fbpitch;
+	framebuffer[where] = color;              // BLUE
+    framebuffer[where + 1] = (color >> 8);   // GREEN
+    framebuffer[where + 2] = (color >> 16);  // RED
 }
 bool changed=false;
 void vgaPutchar(char c,word x,word y,uint32_t fg,uint32_t bg)

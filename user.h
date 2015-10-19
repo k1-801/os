@@ -38,14 +38,6 @@ bool fRun=true;
 0000111111110000\
 ";
 void drawWallpaper(){
-	//BGCOLOR,BLUE,LIGHT_CYAN,3,0,4
-			drawBitmap(logo,1,464-120,124,344,BGCOLOR,BLUE,LIGHT_CYAN,3,0,4);
-	drawBitmap(logo,125,464-120,124,344,BGCOLOR,BLUE,LIGHT_CYAN,3,0,4);
-	drawBitmap(logo,249,464-120,124,344,BGCOLOR,BLUE,LIGHT_CYAN,3,0,4);
-	drawBitmap(logo,249+124,464-120,124,344,BGCOLOR,BLUE,LIGHT_CYAN,3,0,4);
-	drawBitmap(logo,249+124*2,464-120,124,344,BGCOLOR,BLUE,LIGHT_CYAN,3,0,4);
-	drawBitmap(logo,249+124*3,464-120,136,349,BGCOLOR,BLUE,LIGHT_CYAN,3,0,4);
-	vgaWriteStr(249+56,464-130,"OS365 1.0.6",LIGHT_BROWN,BGCOLOR);
 }
 int charToScancode(char c)
 {	
@@ -356,7 +348,7 @@ void showLogs()
 	int i=0;
 	//int 
 	log("[USER] Started program: Log Viewer");
-	setGraphicsMode();
+	fillRect(1024,768,0,0,BLACK);
 	vgaWriteStr(0,0,"System logs of OS365. Press X to exit.",WHITE,BLACK);
 	char c=0;
 	do
@@ -384,7 +376,7 @@ void textEdit()
 	int tfNum = 0;
 	bool caps = false;
 	char c;
-	window editor(400,300,10,10,tNames[LANG_RUS][LC_EDITORTITLE],"");
+	window editor(1000,600,10,10,tNames[LANG_RUS][LC_EDITORTITLE],"");
 	drawObj(editor);
 	//drawBitmap(fatalerror,15,16,16,16,BLACK,LIGHT_GREY,LIGHT_GREEN,LIGHT_BLUE,RED);
 	vgaWriteStr(editor.x+5,editor.y+21,tNames[LANG_RUS][LC_EDITORTIPS],MAGENTA,LIGHT_GREY);
@@ -489,7 +481,7 @@ void displayColorSet(word x, word y)
 {
 	for(int i = 0; i < 16; i++)
 	{
-		fillRect(9,16,x+(i*9),y,i);
+		fillRect(1,16,x+(i*9),y,i);
 	}
 }
 void about()
@@ -499,7 +491,7 @@ void about()
 	//drawWallpaper();
 	window info(540,80,40,30,tNames[LANG_RUS][LC_NAME_OSINFO],"");
 	drawObj(info);
-	displayColorSet(info.x+5+2, info.y+21+35);
+	//displayColorSet(info.x+5+2, info.y+21+35);
 	//assert(0==1);
 	vgaWriteStr(info.x+5,info.y+21,tNames[LANG_RUS][LC_ABOUTTIPS],MAGENTA,LIGHT_GREY);
 		//read_rtc(); //update the time...
@@ -661,22 +653,22 @@ void wallColor()
 			{
 				switch(scancodetochar(c))
 				{
-				case '0': BGCOLOR=0; log("[USER] Wallpaper changed to Black"); delWin(wcolor); setGraphicsMode(); startZ(true);
-				case '1': BGCOLOR=1; log("[USER] Wallpaper changed to Blue"); fRun=true; delWin(wcolor); startZ(true);
-				case '2': BGCOLOR=2; log("[USER] Wallpaper changed to Green"); fRun=true; delWin(wcolor); startZ(true);
-				case '3': BGCOLOR=3; log("[USER] Wallpaper changed to Cyan"); fRun=true; delWin(wcolor); startZ(true);
-				case '4': BGCOLOR=4; log("[USER] Wallpaper changed to Red"); fRun=true; delWin(wcolor); startZ(true);
-				case '5': BGCOLOR=5; log("[USER] Wallpaper changed to Magenta"); fRun=true; delWin(wcolor); startZ(true);
-				case '6': BGCOLOR=6; log("[USER] Wallpaper changed to Brown"); fRun=true; delWin(wcolor); startZ(true);
-				case '7': BGCOLOR=7; log("[USER] Wallpaper changed to Light Grey"); fRun=true; delWin(wcolor); startZ(true);
-				case '8': BGCOLOR=8; log("[USER] Wallpaper changed to Dark Grey"); fRun=true; delWin(wcolor); startZ(true);
-				case '9': BGCOLOR=9; log("[USER] Wallpaper changed to Light Blue"); fRun=true; delWin(wcolor); startZ(true);
-				case 'a': BGCOLOR=10; log("[USER] Wallpaper changed to Light Green"); fRun=true; delWin(wcolor); startZ(true);
-				case 'b': BGCOLOR=11; log("[USER] Wallpaper changed to Light Cyan"); fRun=true; delWin(wcolor); startZ(true);
-				case 'c': BGCOLOR=12; log("[USER] Wallpaper changed to Light Red"); fRun=true; delWin(wcolor); startZ(true);
-				case 'd': BGCOLOR=13; log("[USER] Wallpaper changed to Light Magenta"); fRun=true; delWin(wcolor); startZ(true);
-				case 'e': BGCOLOR=14; log("[USER] Wallpaper changed to Yellow"); fRun=true; delWin(wcolor); startZ(true);
-				case 'f': BGCOLOR=15; log("[USER] Wallpaper changed to White"); fRun=true; delWin(wcolor); startZ(true);
+				case '0': BGCOLOR=0; log("[USER] Wallpaper changed to Black"); fRun=true; delWin(wcolor); startZ(true);
+				case '1': BGCOLOR=BLUE; log("[USER] Wallpaper changed to Blue"); fRun=true; delWin(wcolor); startZ(true);
+				case '2': BGCOLOR=GREEN; log("[USER] Wallpaper changed to Green"); fRun=true; delWin(wcolor); startZ(true);
+				case '3': BGCOLOR=CYAN; log("[USER] Wallpaper changed to Cyan"); fRun=true; delWin(wcolor); startZ(true);
+				case '4': BGCOLOR=RED; log("[USER] Wallpaper changed to Red"); fRun=true; delWin(wcolor); startZ(true);
+				case '5': BGCOLOR=MAGENTA; log("[USER] Wallpaper changed to Magenta"); fRun=true; delWin(wcolor); startZ(true);
+				case '6': BGCOLOR=BROWN; log("[USER] Wallpaper changed to Brown"); fRun=true; delWin(wcolor); startZ(true);
+				case '7': BGCOLOR=LIGHT_GREY; log("[USER] Wallpaper changed to Light Grey"); fRun=true; delWin(wcolor); startZ(true);
+				case '8': BGCOLOR=DARK_GREY; log("[USER] Wallpaper changed to Dark Grey"); fRun=true; delWin(wcolor); startZ(true);
+				case '9': BGCOLOR=LIGHT_BLUE; log("[USER] Wallpaper changed to Light Blue"); fRun=true; delWin(wcolor); startZ(true);
+				case 'a': BGCOLOR=LIGHT_GREEN; log("[USER] Wallpaper changed to Light Green"); fRun=true; delWin(wcolor); startZ(true);
+				case 'b': BGCOLOR=LIGHT_CYAN; log("[USER] Wallpaper changed to Light Cyan"); fRun=true; delWin(wcolor); startZ(true);
+				case 'c': BGCOLOR=LIGHT_RED; log("[USER] Wallpaper changed to Light Red"); fRun=true; delWin(wcolor); startZ(true);
+				case 'd': BGCOLOR=LIGHT_MAGENTA; log("[USER] Wallpaper changed to Light Magenta"); fRun=true; delWin(wcolor); startZ(true);
+				case 'e': BGCOLOR=LIGHT_BROWN; log("[USER] Wallpaper changed to Yellow"); fRun=true; delWin(wcolor); startZ(true);
+				case 'f': BGCOLOR=WHITE; log("[USER] Wallpaper changed to White"); fRun=true; delWin(wcolor); startZ(true);
 				}
 			}
 		}
@@ -688,7 +680,7 @@ void graphicsEdit()
 	log("[USER] Started program: Graphics Editor");
 	drawmain();
 	//drawWallpaper();
-	window os365brush(350,300,50,50,tNames[LANG_RUS][LC_GREDITTITLE],"");
+	window os365brush(1000,600,20,50,tNames[LANG_RUS][LC_GREDITTITLE],"");
 	drawObj(os365brush);
 	word x = 0;
 	word y = 0;
@@ -702,8 +694,8 @@ void graphicsEdit()
 			switch(c)
 			{
 			case 0x48: if(y > 0) y--; break;
-			case 0x50: if(y <= 280) y++; break;
-			case 0x4D: if(x <= 345) x++; break;
+			case 0x50: if(y <= 571) y++; break;
+			case 0x4D: if(x <= 990) x++; break;
 			case 0x4B: if(x >= 0) x--; break;
 			case 0x39: VGAPix16(os365brush.x+5+x,os365brush.y+21+y,color,640,480); break;
 			case 0x2E: 			
@@ -741,7 +733,7 @@ void graphicsEdit()
 void gomenu()
 {
 	log("[USER] Started program: Go! Menu");
-	window goMenu(148,200,0,272,tNames[LANG_RUS][LC_NAME_GOMENU],"");
+	window goMenu(148,200,0,768-208,tNames[LANG_RUS][LC_NAME_GOMENU],"");
 	drawObj(goMenu,false);
 	//drawWallpaper();
 	int selection = 1;
@@ -871,7 +863,7 @@ void help()
 {
 	log("[USER] Started program: Help");
 	drawmain();
-	window help(639,460,-1,8,tNames[LANG_RUS][LC_NAME_HELP],"");
+	window help(639,460,10,30,tNames[LANG_RUS][LC_NAME_HELP],"");
 	drawObj(help);
 	int i;
 	//vgaWriteStr(help.x+5,help.y+21,"Welcome to OS365 1.0.4\nThe OS nW",MAGENTA,LIGHT_GREY);
@@ -989,30 +981,35 @@ void help()
 			break;
 			if(c==0x3E)
 			{
-				setGraphicsMode();
+				fillRect(1024,768,0,0,BLACK);
 				setupFonts();
 				int oldlang=currLang;
 				currLang=LANG_ENG;
 				int j=0;
 				vgaWriteStr(0,j*8,"OS365 Authors and Developers Team",LIGHT_CYAN,BLACK);
 				j++;
-				vgaWriteStr(0,j*8,"Main OS Developer                      Nikita Ivanov      (catnikita255)",LIGHT_CYAN,BLACK);
+				vgaWriteStr(0,j*8,"Main OS Developer                                                Nikita Ivanov      (catnikita255)",LIGHT_CYAN,BLACK);
 				j++;
-				vgaWriteStr(0,j*8,"Helped with big problems               Roman Zhikharevich (rzhikharevich)",LIGHT_CYAN,BLACK);
+				vgaWriteStr(0,j*8,"Helped with big problems                                         Roman Zhikharevich (rzhikharevich)",LIGHT_CYAN,BLACK);
 				j++;
-				vgaWriteStr(0,j*8,"Helped                                 Artem Klimov       (xom4a2003)",LIGHT_CYAN,BLACK);
+				vgaWriteStr(0,j*8,"Helped                                                           Artem Klimov       (xom4a2003)",LIGHT_CYAN,BLACK);
 				j++;
-				vgaWriteStr(0,j*8,"Helped a lot with low-level services   glauxosdever",LIGHT_CYAN,BLACK);
+				vgaWriteStr(0,j*8,"Helped a lot with low-level services                             glauxosdever",LIGHT_CYAN,BLACK);
 				j++;
-				vgaWriteStr(0,j*8,"Some ideas                             Mitrofan Iskra     (Monolit_Rex)",LIGHT_CYAN,BLACK);
+				vgaWriteStr(0,j*8,"Some ideas                                                       Mitrofan Iskra     (Monolit_Rex)",LIGHT_CYAN,BLACK);
 				j++;
-				vgaWriteStr(0,j*8,"Graphics mode code and text displaying Unsigned",LIGHT_CYAN,BLACK);
+				vgaWriteStr(0,j*8,"Old graphics mode code and text displaying                       Unsigned",LIGHT_CYAN,BLACK);
 				j++;
+				vgaWriteStr(0,j*8,"Helped with VBE mode by giving link to Multiboot Specification   SapphireOS",LIGHT_CYAN,BLACK);
+				j++;
+				
 				vgaWriteStr(0,j*8,"Thanks to a lot of OSDev users for helping when i am got stuck.",LIGHT_CYAN,BLACK);
 				j++;
+				
 				vgaWriteStr(0,j*8,"I can't list their names, because it will be so big.",LIGHT_CYAN,BLACK);
 				j++;
-				vgaWriteStr(0,j*8,"OS365 1.0.7.",LIGHT_CYAN,BLACK);
+				
+				vgaWriteStr(0,j*8,"OS365 1.1.",LIGHT_CYAN,BLACK);
 				j++;
 
 				vgaWriteStr(0,j*8,"By Byte PowerSoft.",LIGHT_CYAN,BLACK);
@@ -1077,7 +1074,7 @@ void startZ(bool startwin)
 	terminal_setcolor(COLOR_LIGHT_GREY + COLOR_BLACK);
 	z_init();
 	if(fRun)drawmain();
-	if(fRun)fillRect(640,464,-1,8,BGCOLOR);
+	if(fRun)fillRect(1024,751,-1,8,BGCOLOR);
 	fRun=false;
 	drawDesktop();
 	drawWallpaper();
@@ -1136,7 +1133,6 @@ void startZ(bool startwin)
 	}    
 	while(c!=1);
 //	waitForKey(29);
-	gomenu();
 }
 /*void zwin_start()
 {

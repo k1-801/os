@@ -1,6 +1,7 @@
 #include "mem.h"
 #include "panic.h"
 #include "graphics.h"
+#include "user.h"
 #include "zbase.h"
 #include "cmos.h"
 #include "klog.h"
@@ -330,6 +331,17 @@ void sleep(unsigned long ms)
 	_sleepCurrently=true;
 	msLeft=ms;
 	while(_sleepCurrently);
+}
+void kbdHandler(struct regs *r)
+{
+	if(inb(0x60)==29)
+	{
+		gomenu();
+	}
+}
+void initKbd()
+{
+	irq_install_handler(1,kbdHandler);
 }
 void setupPIT()
 {

@@ -3,7 +3,7 @@
 #include "graphics.h"
 #include "scrio.h"
 #include "locale.h"
-byte BGCOLOR=3;
+byte BGCOLOR=CYAN;
 class window {
 	public:
 	size_t width;
@@ -167,7 +167,7 @@ void drawmain()
 	//"OS365 Kernel 1.0.3, Z Window System 1.1.0.                                              "
 	//"Press left CTRL to display main menu, or F1 to show help.                               "
 	vgaWriteStr(0,0,tNames[LANG_RUS][LC_NAME_MAINTOP],WHITE,LIGHT_BLUE);
-	vgaWriteStr(0,471,tNames[LANG_RUS][LC_NAME_MAINBOTTOM],WHITE,LIGHT_BLUE);
+	vgaWriteStr(0,759,tNames[LANG_RUS][LC_NAME_MAINBOTTOM],WHITE,LIGHT_BLUE);
 
 }
 void printw(const char * msg, window wnd)
