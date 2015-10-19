@@ -297,7 +297,7 @@ void mouse_handler(struct regs *a_r) //struct regs *a_r (not used but just there
       mouse_cycle=0;
       break;
   }
-  fillRect(20,20,oldx,oldy,BGCOLOR);
+  //fillRect(20,20,oldx,oldy,BGCOLOR);
   fillRect(20,20,mouse_x,mouse_y,WHITE);
   oldx=mouse_x;
   oldy=mouse_y;
@@ -323,8 +323,7 @@ void timer_handler(struct regs *r)
 		msLeft--;
 	}
 	if(!msLeft) _sleepCurrently=false;*/
-	if(timer_ticks%18==0)
-	log("PIT fired");
+	asm("int $8");
 }
 void sleep(unsigned long ms)
 {
@@ -334,10 +333,20 @@ void sleep(unsigned long ms)
 }
 void kbdHandler(struct regs *r)
 {
-	if(inb(0x60)==29)
+	char c=0;
+	do
 	{
-		gomenu();
+		if(inb(0x60)!=c)
+		{
+			c = inb(0x60);
+			if(c>0)
+			{
+				if(c==29)
+				gomenu();
+			}
+		}
 	}
+	while(c!=1);
 }
 void initKbd()
 {

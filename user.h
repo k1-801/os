@@ -38,6 +38,8 @@ bool fRun=true;
 0000111111110000\
 ";
 void drawWallpaper(){
+	fillRect(768,759,-1,8,BLACK);
+		drawGradient(768,7,1024,759,0x000000,0xFF0000);
 }
 int charToScancode(char c)
 {	
@@ -121,8 +123,8 @@ class icon
 void icon::draw()
 {
 	//icon is 16x16
-	drawBitmap(icon,x+15,y,16,16,BGCOLOR,LIGHT_GREY,LIGHT_GREEN,LIGHT_BLUE,LIGHT_RED);
-	vgaWriteStr(x+3,y+16+3,label/* + "(" + key + ")"*/,WHITE,BGCOLOR);
+	drawBitmap(icon,x+15,y,16,16,BGCOLOR,LIGHT_GREY,LIGHT_GREEN,LIGHT_BLUE,LIGHT_RED,true);
+	vgaWriteStr(x+3,y+16+3,label/* + "(" + key + ")"*/,WHITE,BGCOLOR,true);
 	vLine(x+3,y+16+3+8+2,6,WHITE);
 }
 icon iconList[256];
@@ -744,9 +746,8 @@ void gomenu()
 	vgaWriteStr(goMenu.x+5,goMenu.y+45,tNames[LANG_RUS][LC_NAME_REBOOT],MAGENTA,LIGHT_GREY);
 	vgaWriteStr(goMenu.x+5,goMenu.y+53,tNames[LANG_RUS][LC_NAME_EDITOR],MAGENTA,LIGHT_GREY);
 	vgaWriteStr(goMenu.x+5,goMenu.y+61,tNames[LANG_RUS][LC_NAME_GREDIT],MAGENTA,LIGHT_GREY);
-	vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_WPCOLOR],MAGENTA,LIGHT_GREY);
-	vgaWriteStr(goMenu.x+5,goMenu.y+77,tNames[LANG_RUS][LC_NAME_CLOCK],MAGENTA,LIGHT_GREY);
-	vgaWriteStr(goMenu.x+5,goMenu.y+86,tNames[LANG_RUS][LC_NAME_LVIEW],MAGENTA,LIGHT_GREY);
+	vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_CLOCK],MAGENTA,LIGHT_GREY);
+	vgaWriteStr(goMenu.x+5,goMenu.y+77,tNames[LANG_RUS][LC_NAME_LVIEW],MAGENTA,LIGHT_GREY);
 	//vgaWriteStr(goMenu.x+5,goMenu.y+77,"CLOCK",MAGENTA,LIGHT_GREY);
 	vgaWriteStr(goMenu.x+5,goMenu.y+21,tNames[LANG_RUS][LC_NAME_OSINFO],LIGHT_GREY,MAGENTA);
 	//printw("test\ntewlines\nmasrkovka\nkostya puknum",goMenu);
@@ -767,9 +768,9 @@ void gomenu()
 					vgaWriteStr(goMenu.x+5,goMenu.y+45,tNames[LANG_RUS][LC_NAME_REBOOT],MAGENTA,LIGHT_GREY);
 					vgaWriteStr(goMenu.x+5,goMenu.y+53,tNames[LANG_RUS][LC_NAME_EDITOR],MAGENTA,LIGHT_GREY);
 					vgaWriteStr(goMenu.x+5,goMenu.y+61,tNames[LANG_RUS][LC_NAME_GREDIT],MAGENTA,LIGHT_GREY);
-					vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_WPCOLOR],MAGENTA,LIGHT_GREY);
-					vgaWriteStr(goMenu.x+5,goMenu.y+77,tNames[LANG_RUS][LC_NAME_CLOCK],MAGENTA,LIGHT_GREY);
-					vgaWriteStr(goMenu.x+5,goMenu.y+86,tNames[LANG_RUS][LC_NAME_LVIEW],MAGENTA,LIGHT_GREY);
+					//vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_WPCOLOR],MAGENTA,LIGHT_GREY);
+					vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_CLOCK],MAGENTA,LIGHT_GREY);
+					vgaWriteStr(goMenu.x+5,goMenu.y+77,tNames[LANG_RUS][LC_NAME_LVIEW],MAGENTA,LIGHT_GREY);
 					switch(selection)
 					{
 					case 1: vgaWriteStr(goMenu.x+5,goMenu.y+21,tNames[LANG_RUS][LC_NAME_OSINFO],LIGHT_GREY,MAGENTA); break;
@@ -778,16 +779,16 @@ void gomenu()
 					case 4: vgaWriteStr(goMenu.x+5,goMenu.y+45,tNames[LANG_RUS][LC_NAME_REBOOT],LIGHT_GREY,MAGENTA); break;
 					case 5: vgaWriteStr(goMenu.x+5,goMenu.y+53,tNames[LANG_RUS][LC_NAME_EDITOR],LIGHT_GREY,MAGENTA); break;
 					case 6: vgaWriteStr(goMenu.x+5,goMenu.y+61,tNames[LANG_RUS][LC_NAME_GREDIT],LIGHT_GREY,MAGENTA); break;
-					case 7: vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_WPCOLOR],LIGHT_GREY,MAGENTA);break;
-					case 8: vgaWriteStr(goMenu.x+5,goMenu.y+77,tNames[LANG_RUS][LC_NAME_CLOCK],LIGHT_GREY,MAGENTA);break;
-					case 9: vgaWriteStr(goMenu.x+5,goMenu.y+86,tNames[LANG_RUS][LC_NAME_LVIEW],LIGHT_GREY,MAGENTA);
+					//case 7: vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_WPCOLOR],LIGHT_GREY,MAGENTA);break;
+					case 7: vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_CLOCK],LIGHT_GREY,MAGENTA);break;
+					case 8: vgaWriteStr(goMenu.x+5,goMenu.y+77,tNames[LANG_RUS][LC_NAME_LVIEW],LIGHT_GREY,MAGENTA);
 
 					}
 				}
 			}
 			if(c==0x50)
 			{
-				if(selection<9)
+				if(selection<8)
 				{
 					selection++;
 					vgaWriteStr(goMenu.x+5,goMenu.y+21,tNames[LANG_RUS][LC_NAME_OSINFO],MAGENTA,LIGHT_GREY);
@@ -796,9 +797,9 @@ void gomenu()
 					vgaWriteStr(goMenu.x+5,goMenu.y+45,tNames[LANG_RUS][LC_NAME_REBOOT],MAGENTA,LIGHT_GREY);
 					vgaWriteStr(goMenu.x+5,goMenu.y+53,tNames[LANG_RUS][LC_NAME_EDITOR],MAGENTA,LIGHT_GREY);
 					vgaWriteStr(goMenu.x+5,goMenu.y+61,tNames[LANG_RUS][LC_NAME_GREDIT],MAGENTA,LIGHT_GREY);
-					vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_WPCOLOR],MAGENTA,LIGHT_GREY);
-					vgaWriteStr(goMenu.x+5,goMenu.y+77,tNames[LANG_RUS][LC_NAME_CLOCK],MAGENTA,LIGHT_GREY);
-					vgaWriteStr(goMenu.x+5,goMenu.y+86,tNames[LANG_RUS][LC_NAME_LVIEW],MAGENTA,LIGHT_GREY);
+					//vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_WPCOLOR],MAGENTA,LIGHT_GREY);
+					vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_CLOCK],MAGENTA,LIGHT_GREY);
+					vgaWriteStr(goMenu.x+5,goMenu.y+77,tNames[LANG_RUS][LC_NAME_LVIEW],MAGENTA,LIGHT_GREY);
 					switch(selection)
 					{
 					case 1: vgaWriteStr(goMenu.x+5,goMenu.y+21,tNames[LANG_RUS][LC_NAME_OSINFO],LIGHT_GREY,MAGENTA); break;
@@ -807,9 +808,9 @@ void gomenu()
 					case 4: vgaWriteStr(goMenu.x+5,goMenu.y+45,tNames[LANG_RUS][LC_NAME_REBOOT],LIGHT_GREY,MAGENTA); break;
 					case 5: vgaWriteStr(goMenu.x+5,goMenu.y+53,tNames[LANG_RUS][LC_NAME_EDITOR],LIGHT_GREY,MAGENTA); break;
 					case 6: vgaWriteStr(goMenu.x+5,goMenu.y+61,tNames[LANG_RUS][LC_NAME_GREDIT],LIGHT_GREY,MAGENTA); break;
-					case 7: vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_WPCOLOR],LIGHT_GREY,MAGENTA);break;
-					case 8: vgaWriteStr(goMenu.x+5,goMenu.y+77,tNames[LANG_RUS][LC_NAME_CLOCK],LIGHT_GREY,MAGENTA);break;
-					case 9: vgaWriteStr(goMenu.x+5,goMenu.y+86,tNames[LANG_RUS][LC_NAME_LVIEW],LIGHT_GREY,MAGENTA);
+					//case 7: vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_WPCOLOR],LIGHT_GREY,MAGENTA);break;
+					case 7: vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_CLOCK],LIGHT_GREY,MAGENTA);break;
+					case 8: vgaWriteStr(goMenu.x+5,goMenu.y+77,tNames[LANG_RUS][LC_NAME_LVIEW],LIGHT_GREY,MAGENTA);
 
 					}
 				}
@@ -819,6 +820,7 @@ void gomenu()
 	while(c!=28);
 	delWin(goMenu);
 	drawWallpaper();
+	drawDesktop();
 	switch(selection)
 	{
 	case 1:
@@ -847,11 +849,11 @@ void gomenu()
 	}
 	case 7:
 	{
-	wallColor(); break;
+	clock(); break;
 	}
 	case 8:
 	{
-	clock(); break;
+	showLogs(); break;
 	}
 	case 9:
 	{
@@ -1067,18 +1069,18 @@ void setupDeskTranslations()
 }
 void startZ(bool startwin)
 {
+	BGCOLOR=0;
+		drawWallpaper();
 	setupDeskTranslations();
 	if(fRun)
 	log("[INFO] Z Window System is started or reloaded.");
 	setupLocale();
 	terminal_setcolor(COLOR_LIGHT_GREY + COLOR_BLACK);
 	z_init();
-	if(fRun)drawmain();
-	if(fRun)fillRect(1024,751,-1,8,BGCOLOR);
+	if(fRun)drawmain();//fillRect(1024,751,-1,8,BGCOLOR);
 	fRun=false;
-	drawDesktop();
-	drawWallpaper();
-		drawmain();
+			drawmain();
+		drawDesktop();
 	char c;
 	do
 	{
@@ -1131,7 +1133,7 @@ void startZ(bool startwin)
 			}
 		}
 	}    
-	while(c!=1);
+	while(true);
 //	waitForKey(29);
 }
 /*void zwin_start()

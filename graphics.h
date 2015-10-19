@@ -101,7 +101,7 @@ enum colors
 	DARK_GREY = 0x777777,
 	LIGHT_BLUE = 0x0000FF,
 	LIGHT_GREEN = 0x00FF00,
-	LIGHT_CYAN = 0xFFEEFF,
+	LIGHT_CYAN = 0x00FFFF,
 	LIGHT_RED = 0xFF0000,
 	LIGHT_MAGENTA = 0xDD00DD,
 	LIGHT_BROWN = 0xffff00,
@@ -877,7 +877,7 @@ inline void VGAPix16(word x,word y,uint32_t color,word w,word h)
     framebuffer[where + 2] = (color >> 16);  // RED
 }
 bool changed=false;
-void vgaPutchar(char c,word x,word y,uint32_t fg,uint32_t bg)
+void vgaPutchar(char c,word x,word y,uint32_t fg,uint32_t bg, bool dnf=false)
 {
 	int i,j;
 	i = 0;
@@ -906,6 +906,7 @@ void vgaPutchar(char c,word x,word y,uint32_t fg,uint32_t bg)
 			}
 			else
 			{
+				if(!dnf)
 				VGAPix16(x+j,y+i,bg,640,480);
 			}
 			j++;
@@ -924,6 +925,25 @@ void vgaWriteStr(word x,word y,const char * str,uint32_t fg,uint32_t bg)
 		//case 'ф': vgaPutchar('ф',x,y,fg,bg);
 		//default:
 		vgaPutchar(str[i],x,y,fg,bg);
+		//}
+		//if(!changed)
+		//{
+			x = x+8;
+		//	continue;
+		//}
+		//else changed=false;
+	}
+}
+void vgaWriteStr(word x,word y,const char * str,uint32_t fg,uint32_t bg, bool dnf)
+{
+	word oldx=x;
+	for(int i; i != strlen(str); i++)
+	{
+		//switch(str[i])
+		//{
+		//case 'ф': vgaPutchar('ф',x,y,fg,bg);
+		//default:
+		vgaPutchar(str[i],x,y,fg,bg,true);
 		//}
 		//if(!changed)
 		//{
@@ -981,9 +1001,9 @@ void putpix(uint32_t color)
 		x = 0;
 	}
 }
-byte colorMix(byte c1, byte c2)
+uint32_t colorMix(uint32_t c1, uint32_t c2)
 {
-	return c1+c2-(16-min(c1,c2));
+	return c1+c2-(16777216-min(c1,c2));
 }
 char a[] = "00000000\n\
 00000000\n\
@@ -1049,7 +1069,20 @@ void fillRect(word w,word h, word x_, word y_, uint32_t color)
 		i++;
 	}
 }
-void drawBitmap(char bm[],word x,word y,word width,word height,uint32_t bg,uint32_t c1,uint32_t c2,uint32_t c3,uint32_t c4,int scale=1)
+inline void drawGradient(int x, int y, int x2, int y2, uint32_t c1, uint32_t c2,bool rev=false)
+{
+	if(!rev)
+	for(int i=0; (i < x2-x)&&((c1+i)<c2); i++)
+	{
+		hLine(x+i,y,y2-y,c1+i);
+	}
+	else
+	for(int i=x2-x; i>=0; i--)
+	{
+		hLine(x+i,y,y2-y,c1+i);
+	}
+}
+void drawBitmap(char bm[],word x,word y,word width,word height,uint32_t bg,uint32_t c1,uint32_t c2,uint32_t c3,uint32_t c4,bool dnf=false)
 {
 	int i,j;
 	//int sc1=0,sc2=0;
@@ -1066,8 +1099,14 @@ void drawBitmap(char bm[],word x,word y,word width,word height,uint32_t bg,uint3
 		{
 			//while(sc2<scale)
 			//{
+			
 			if(bm[count] == '0')
+			{
+			if(!dnf)
+			{
 			VGAPix16(x+j,y+i,bg,640,480);
+			}
+		}
 			else if(bm[count] == '1')
 			VGAPix16(x+j,y+i,c1,640,480);
 			else if(bm[count] == '2')
