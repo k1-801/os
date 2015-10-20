@@ -21,4 +21,8 @@ typedef struct bin_365B_header {
 	 * In any section strings starts with S.
 	*/
 }Hdr365B;
+/*
+ * struct-ili=dklsad
+ * test of ttest
+*/
 #endif

@@ -40,6 +40,8 @@ bool fRun=true;
 void drawWallpaper(){
 	fillRect(768,759,-1,8,BLACK);
 		drawGradient(768,7,1024,759,0x000000,0xFF0000);
+	//for(uint32_t i=LIGHT_BROWN; i < 0xFF8000 && 768+i < 1024; i++)
+	//hLine(768,7,752,i);
 }
 int charToScancode(char c)
 {	
@@ -420,6 +422,7 @@ void textEdit()
 			}*/
 			if(c == 0x0E)
 			{
+				
 				if(curposX != 0)
 				{
 					if(curposY != 0)
@@ -427,16 +430,19 @@ void textEdit()
 						curposX = curposX - 8;
 						goToPos(terminal_column-1,terminal_row);
 						vgaPutchar(' ',curposX+editor.x+5,curposY+editor.y+29,MAGENTA,LIGHT_GREY);
+												//vgaPutchar(' ',curposX+editor.x+5+8,curposY+editor.y+29,MAGENTA,LIGHT_GREY);
 						goToPos(terminal_column-1,terminal_row);
 						charNum--;
 					}
 				}
 				else
 				{
-					curposY--;
-					curposX = 68;
+					curposY-=8;
+					curposX = 990;
 					goToPos(editor.x+1+curposX,editor.y+3+curposY);
+															//hLine(editor.x+5+curposX+10,editor.y+21+curposY+7,8,BLACK);
 				}
+																				//hLine(editor.x+5+curposX+10,editor.y+21+curposY+7,8,BLACK);
 				goto skip2;
 			}
 			if(c == 0x3A)
@@ -459,6 +465,7 @@ void textEdit()
 			}
 			if(c == 28)
 			{
+								//hLine(editor.x+5+curposX+10,editor.y+21+curposY+7,8,BLACK);
 				curposY = curposY+8;
 				curposX = 0;
 				goToPos(editor.x+1+curposX,editor.x+2+curposY);
@@ -466,6 +473,7 @@ void textEdit()
 			}
 			if(c>0)
 			{
+								//hLine(editor.x+5+curposX+10,editor.y+21+curposY+7,8,BLACK);
 				if(caps == false)
 				vgaPutchar(scancode[c+1],curposX+editor.x+5,curposY+editor.y+29,MAGENTA,LIGHT_GREY);
 				else
@@ -475,6 +483,7 @@ void textEdit()
 		}
 		skip2:
 		nop();
+		
 	} while(c!=0x3F);
 	delWin(editor);
 	startZ(true);
