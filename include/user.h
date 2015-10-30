@@ -18,7 +18,7 @@
 #define paste(front,back) front ## back
 //Semigraphics table.
 bool fRun=true;
-							char *logo = "\
+const char *logo = "\
 0000000000000000\
 0000000001100000\
 0000000001210000\
@@ -1054,7 +1054,7 @@ void help()
 	delWin(help);
 	startZ(true);
 }
-char *translateTable[2][128];
+char translateTable[2][128];
 char desktopTranslate(char c)
 {
 	return translateTable[currLang][c];
@@ -1067,6 +1067,7 @@ void setupDeskTranslations()
 	translateTable[LANG_ENG]['g']='g';
 	translateTable[LANG_ENG]['l']='l';
 	translateTable[LANG_ENG]['c']='c';
+
 	translateTable[LANG_RUS]['a']='f';
 	translateTable[LANG_RUS]['o']='b';
 	translateTable[LANG_RUS]['t']='3';

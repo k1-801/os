@@ -20,5 +20,6 @@ SECTIONS
 		*(COMMON)
 		*(.bss)
 		*(.bootstrap_stack)
+		kend = .;
 	}
-}
+} 

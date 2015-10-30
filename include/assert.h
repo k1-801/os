@@ -10,7 +10,7 @@ char *oldfile;
 #define _assertionFailed(check) drawAFailedWnd();
 void drawAFailedWnd()
 {
-	window afailed(400,50,100,120,"OS365 Internal Error","");
+	window afailed(400,50,100,120,QUOTATE(DISTNAME)" Internal Error","");
 	drawObj(afailed);
 	char *asserterr;
 	strcat(asserterr,"Assertion failed at line ");

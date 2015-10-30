@@ -43,7 +43,7 @@ window::window(size_t width, size_t height, size_t x, size_t y, const char * cap
 void printw(const char * msg, window wnd);
 bool drawObj(window target,bool);
 void z_init();
-char *roundLT = "\
+const char *roundLT = "\
 0000022222222222\
 0002222222222222\
 0022111111111111\
@@ -61,7 +61,7 @@ char *roundLT = "\
 2211111111111111\
 2211111111111111\
 ";
-char *roundRT = "\
+const char *roundRT = "\
 2222222222200000\
 2222222222222000\
 1111111111112200\
@@ -79,7 +79,7 @@ char *roundRT = "\
 1111111111111122\
 1111111111111122\
 ";
-char *roundLB = "\
+const char *roundLB = "\
 2211111111111111\
 2211111111111111\
 2211111111111111\
@@ -97,7 +97,7 @@ char *roundLB = "\
 0002222222222222\
 0000022222222222\
 ";
-char *roundRB = "\
+const char *roundRB = "\
 1111111111111122\
 1111111111111122\
 1111111111111122\

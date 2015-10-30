@@ -13,14 +13,14 @@ CFLAGS=   -O2
 CXXFLAGS= -O2 -ffreestanding -fno-exceptions -std=gnu++11 -fno-rtti -fpermissive
 LINKFLAGS= -nostdlib -lgcc
 
-SOURCES=kernel.cpp tstream.c boot.s
+SOURCES=HCL/Char.cpp HCL/String.cpp HCL/StringData.cpp kernel.cpp boot.s
 OBJECTS:=SOURCES
-OBJECTS:=$($(SOURCES);"%.asm";"%.asm.o")
-OBJECTS:=$($(SOURCES);"%.s";"%.s.o")
-OBJECTS:=$($(SOURCES);"%.c";"%.c.o")
-OBJECTS:=$($(SOURCES);"%.cpp";"%.cpp.o")
-OBJECTS:=$($(SOURCES);"%.cxx";"%.cxx.o")
-OBJECTS:=$($(SOURCES);"%.c++";"%.c++.o")
+OBJECTS:= $(patsubst %.asm,%.o,$(SOURCES))
+OBJECTS:= $(patsubst %.s,%.o,$(SOURCES))
+OBJECTS:= $(patsubst %.c,%.o,$(SOURCES))
+OBJECTS:= $(patsubst %.cpp,%.o,$(SOURCES))
+OBJECTS:= $(patsubst %.cxx,%.o,$(SOURCES))
+OBJECTS:= $(patsubst %.c++,%.o,$(SOURCES))
 
 SFILES=$(SOURCES)
 TARGET=$(DISTNAME).bin
@@ -60,7 +60,7 @@ all:	_welcome clean build iso qemu
 # Just print messages; no work done
 _welcome:
 	@echo -e " \e[0;32mMakefile for\e[0m \e[1;36m$(DISTNAME)\e[0m \e[0;36mv$(VERSION)\e[0m\n"
-	@mkdir -p $(OBJDIR) $(BINDIR)
+	@mkdir -p $(OBJDIR) $(BINDIR) $(OBJDIR)/HCL
 	@echo "Sources: $(SOURCES);"
 	@echo "Objects: $(OBJECTS);"
 _build:
@@ -84,10 +84,10 @@ compile: _welcome         _compile  $(SOURCES)
 	@echo -e " \e[1;34m==>\e[0m \e[1;32mCompilation success\e[0m"
 
 link:    _welcome compile _link
-	@gcc $(OBJECTS) -o $(TARGET) $(LINKFLAGS)
-	
+	@gcc $(OBJECTS) link.ld -o $(TARGET) $(LINKFLAGS)
+
 build:   _welcome         _build    compile link
-	
+
 clean:   _welcome         _clean
 	@rm *.o *.iso *.bin &> /dev/null | true
 

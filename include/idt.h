@@ -115,12 +115,14 @@ void isrs_install()
 	idt_set_gate(31,(unsigned)isr31, 0x08, 0x8E);
 
 }
-struct regs {
-uint32_t gs,fs,es,ds;
-uint32_t edi,esi,ebp,esp,ebx,edx,ecx,eax;
-uint32_t int_no,err_code;
-uint32_t eip,cs,eflags,useresp,ss;
-};
+typedef struct regs
+{
+    uint32_t gs,fs,es,ds;
+    uint32_t edi,esi,ebp,esp,ebx,edx,ecx,eax;
+    uint32_t int_no,err_code;
+    uint32_t eip,cs,eflags,useresp,ss;
+} regs;
+
 void fault_handler(struct regs *r)
 {
 	outb(0x20,0x20);
@@ -153,16 +155,13 @@ extern void irq15();
 
 /* This array is actually an array of function pointers. We use
 *  this to handle custom IRQ handlers for a given IRQ */
-void *irq_routines[16] =
-{
-    0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0
-};
+typedef void (*irq_routine)(regs*);
+irq_routine irq_routines[16] = {0};
 
 /* This installs a custom IRQ handler for the given IRQ */
-void irq_install_handler(int irq, void (*handler)(struct regs *r))
+void irq_install_handler(int irq, irq_routine r)
 {
-    irq_routines[irq] = handler;
+    irq_routines[irq] = r;
 }
 
 /* This clears the handler for a given IRQ */

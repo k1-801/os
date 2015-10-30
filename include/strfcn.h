@@ -1,32 +1,35 @@
-#ifndef __STRFCN_H
-#define __STRFCN_H
+#ifndef STRFCN_H
+#define STRFCN_H
+
 #include "graphics.h"
 #include <stdarg.h>
+
 int atoi(char* string)
 {
- int self = 0;
- int mult = 10;
- bool negative = false;
- int values[strlen(string)];
- int count = 0;
- for( int id = 0; id < strlen(string); id++ )
- {
-  if( string[id] == '-' ) negative = true;
-  for( char ch = '0'; ch <= '9'; ch++ )
-   if( string[id] == ch )
-    values[count++] = (int)( (int)ch - (int)'0' );
- };
- self = values[count - 1];
- for( int id = 0; id < count - 1; id++ ) mult = mult * 10;
- for( int id = 0; id < count - 1; id++ )
- { 
-  mult = mult / 10;
-  self = self + ( values[id] * mult );
- };
- if( negative == true ) 
-  return -self;
- else
-  return self;
+    int self = 0;
+    int mult = 10;
+    bool negative = false;
+    int values[strlen(string)];
+    int count = 0;
+    for( int id = 0; id < strlen(string); id++ )
+    {
+        if( string[id] == '-' )
+            negative = true;
+        if(string[id] >= '0' && string[id] <= '9')
+            values[count++] = string[id] - '0';
+    };
+    self = values[count - 1];
+    for( int id = 0; id < count - 1; id++ )
+        mult = mult * 10;
+    for( int id = 0; id < count - 1; id++ )
+    { 
+        mult = mult / 10;
+        self = self + ( values[id] * mult );
+    };
+    if( negative == true ) 
+        return -self;
+    else
+        return self;
 };
  char* reverse(char* s)
  {
@@ -45,12 +48,14 @@ char* itoa(int n)
      char* s;
      int i, sign;
  
-     if ((sign = n) < 0)  /* çàïèñûâàåì çíàê */
-         n = -n;          /* äåëàåì n ïîëîæèòåëüíûì ÷èñëîì */
+     if ((sign = n) < 0)
+         n = -n;
      i = 0;
-     do {       /* ãåíåðèðóåì öèôðû â îáðàòíîì ïîðÿäêå */
-         s[i++] = n % 10 + '0';   /* áåðåì ñëåäóþùóþ öèôðó */
-     } while ((n /= 10) > 0);     /* óäàëÿåì */
+     do
+     {
+         s[i++] = n % 10 + '0';
+     }
+     while ((n /= 10) > 0);
      if (sign < 0)
          s[i++] = '-';
      s[i] = '\0';
@@ -58,7 +63,7 @@ char* itoa(int n)
      //ret[0]=' ';
      return ret;
  }
-int sprintf(char *str,const char *fmt, ...)
+int sprintf(char *str, const char *fmt, ...)
 {
 	va_list arg;
 	va_start(arg,fmt);
@@ -77,13 +82,13 @@ int sprintf(char *str,const char *fmt, ...)
 	va_end(arg);
 	return num;
 }
-char *strcpy(char *s,char *t)
+char *strcpy(char *s, const char *t)
 {
 	while(*s++ = *t++)
 	;
 	return s;
 }
-char *strcat(char *s, char *t)
+char *strcat(char *s, const char *t)
 {
 	return strcpy(s+strlen(s),t);
 }
