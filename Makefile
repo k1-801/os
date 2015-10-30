@@ -37,21 +37,6 @@ TARGET=$(DISTNAME).bin
 
 all:	_welcome clean build iso qemu
 	@echo -en
-#	$(compiling) boot.s
-#	~/opt/cross/bin/i686-elf-as boot.s -o boot.o > boot.log
-#	~/opt/cross/bin/i686-elf-as paging.s -o paging.o
-#	yasm rtp.asm -o rtp.o -f elf32
-#	yasm gdt.asm -o gdt.o -f elf32
-#	~/opt/cross/bin/i686-elf-g++ -c kernel.cpp -o kernel.o -O2 -ffreestanding -Wall -Wextra -Wmaybe-uninitialized -fno-exceptions -std=gnu++11 -fno-rtti -fpermissive>/dev/null
-#	echo "done."
-#	~/opt/cross/bin/i686-elf-g++ -T link.ld -o os365.bin -O2 -nostdlib paging.o rtp.o gdt.o boot.o kernel.o -lgcc > linker.log
-#	echo "Creating ISO..."
-#	cp os365.bin isodir/boot/os365.bin
-#	mkdir -p isodir/boot/grub
-#	cp isodir/grub.cfg isodir/boot/grub/
-#	grub-mkrescue -o os365.iso isodir > isomake.log
-#	echo "done. Running in QEMU..."
-#	qemu-system-i386 -cdrom os365.iso
 
 #Compilation definitions
 %.s:
@@ -79,6 +64,8 @@ _compile:
 	@echo -e " \e[1;34m==>\e[0m \e[1mCompiling\e[0m"
 _link:
 	@echo -e " \e[1;34m==>\e[0m \e[1mLinking\e[0m"
+_grub:
+	@echo -e " \e[1;34m==>\e[0m \e[1mReconfiguring \e[1;36mgrub.cfg\e[0m"
 _iso:
 	@echo -e " \e[1;34m==>\e[0m \e[1mGenerating ISO image\e[0m"
 _qemu:
@@ -106,10 +93,9 @@ clean:   _welcome         _clean
 # Resu
 
 grub:    _welcome         _grub
-	@echo\
-"menuentry "Smidgen" \
+	@echo "menuentry \"$(DISTNAME) $(VERSION)\" \
 { \
-	multiboot /boot/Smidgen.bin \
+	multiboot /boot/$(TARGET) \
 	GRUB_GFXMODE=1024x768x16 \
 }" > isodir/grub.cfg
 	@echo -e " \e[1;34m==>\e[0m \e[1;32mGRUB success\e[0m"
@@ -124,11 +110,27 @@ iso:     _welcome grub    _iso
 qemu:   _welcome          _qemu
 	@qemu-system-i386 -cdrom $(ISO)
 
-#backup:
-#	./bkp.sh
-
 git:    _welcome          _git
 	@git add *
 	@git commit -m "make git"
 	@git push
 	@echo -e " \e[1;34m==>\e[0m \e[1;32mGIT success\e[0m"
+
+# OLD TEXT OF all:
+#	$(compiling) boot.s
+#	~/opt/cross/bin/i686-elf-as boot.s -o boot.o > boot.log
+#	~/opt/cross/bin/i686-elf-as paging.s -o paging.o
+#	yasm rtp.asm -o rtp.o -f elf32
+#	yasm gdt.asm -o gdt.o -f elf32
+#	~/opt/cross/bin/i686-elf-g++ -c kernel.cpp -o kernel.o -O2 -ffreestanding -Wall -Wextra -Wmaybe-uninitialized -fno-exceptions -std=gnu++11 -fno-rtti -fpermissive>/dev/null
+#	echo "done."
+#	~/opt/cross/bin/i686-elf-g++ -T link.ld -o os365.bin -O2 -nostdlib paging.o rtp.o gdt.o boot.o kernel.o -lgcc > linker.log
+#	echo "Creating ISO..."
+#	cp os365.bin isodir/boot/os365.bin
+#	mkdir -p isodir/boot/grub
+#	cp isodir/grub.cfg isodir/boot/grub/
+#	grub-mkrescue -o os365.iso isodir > isomake.log
+#	echo "done. Running in QEMU..."
+#	qemu-system-i386 -cdrom os365.iso
+#backup:
+#	./bkp.sh
