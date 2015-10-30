@@ -25,7 +25,6 @@ extern "C" {
 #include "../include/fonts.h"
 #include "../include/unixstd.h"
 
-
 void kernel_main(struct mboot_info_struct *mbinfo)
 {
 	//	addr = (int*) kernel_main;

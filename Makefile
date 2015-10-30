@@ -8,10 +8,11 @@ OBJDIR=./obj/
 BINDIR=./bin/
 ISO=./$(DISTNAME)_$(VERSION).iso
 
-ASMFLAGS= -f elf32
+DEFS= -DDISTNAME=\"$(DISTNAME)\" -DVERSION=\"$(VERSION)\"
+ASMFLAGS=  -f elf32
 SFLAGS=
-CFLAGS=   -O2 -m32
-CXXFLAGS= -O2 -m32 -ffreestanding -fno-exceptions -std=gnu++11 -fno-rtti -fpermissive
+CFLAGS=    $(DEFS) -O2 -m32
+CXXFLAGS=  $(DEFS) -O2 -m32 -ffreestanding -fno-exceptions -std=gnu++11 -fno-rtti -fpermissive
 LINKFLAGS= -nostdlib -lgcc
 
 SOURCES=gdt.asm \
@@ -41,16 +42,16 @@ all:	_welcome clean build iso qemu
 #Compilation definitions
 %.s:
 	@echo -e " \e[0;32m"$@"\e[0m"
-	@$(CPREFIX)as  -c $(SRCDIR)$@ -o $(OBJDIR)$@.o -DDISTNAME=$(DISTNAME) $(SFLAGS)
+	@$(CPREFIX)as  -c $(SRCDIR)$@ -o $(OBJDIR)$@.o $(SFLAGS)
 %.c:
 	@echo -e " \e[0;32m"$@"\e[0m"
-	@$(CPREFIX)gcc -c $(SRCDIR)$@ -o $(OBJDIR)$@.o -DDISTNAME=$(DISTNAME) $(CFLAGS)
+	@$(CPREFIX)gcc -c $(SRCDIR)$@ -o $(OBJDIR)$@.o $(CFLAGS)
 %.cpp:
 	@echo -e " \e[0;32m"$@"\e[0m"
-	@$(CPREFIX)g++ -c $(SRCDIR)$@ -o $(OBJDIR)$@.o -DDISTNAME=$(DISTNAME) $(CXXFLAGS)
+	@$(CPREFIX)g++ -c $(SRCDIR)$@ -o $(OBJDIR)$@.o $(CXXFLAGS)
 %.asm:
 	@echo -e " \e[0;32m$@\e[0m"
-	@yasm             $(SRCDIR)$@ -o $(OBJDIR)$@.o -DDISTNAME=$(DISTNAME) $(ASMFLAGS)
+	@yasm             $(SRCDIR)$@ -o $(OBJDIR)$@.o $(ASMFLAGS)
 
 # Just print messages; no work done
 _welcome:
