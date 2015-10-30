@@ -14,7 +14,7 @@ namespace Hcl
 // HCL
 #include "Char.hpp"
 #include "Std.hpp"
-#include "StringData.hpp"
+#include "Vector.hpp"
 
 namespace Hcl
 {

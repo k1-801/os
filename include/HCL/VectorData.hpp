@@ -40,4 +40,6 @@ namespace Hcl
     };
 }
 
+#include "../../src/HCL/VectorData.tpp"
+
 #endif // HCL_VECTORDATA_HPP

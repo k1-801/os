@@ -6,32 +6,42 @@ CPREFIX=~/opt/cross/bin/i686-elf-
 SRCDIR=./src/
 OBJDIR=./obj/
 BINDIR=./bin/
-ISO=./$(DEISNAME)_$(VERSION).iso
+ISO=./$(DISTNAME)_$(VERSION).iso
 
+ASMFLAGS= -f elf32
 SFLAGS=
-CFLAGS=   -O2
-CXXFLAGS= -O2 -ffreestanding -fno-exceptions -std=gnu++11 -fno-rtti -fpermissive
+CFLAGS=   -O2 -m32
+CXXFLAGS= -O2 -m32 -ffreestanding -fno-exceptions -std=gnu++11 -fno-rtti -fpermissive
 LINKFLAGS= -nostdlib -lgcc
 
-SOURCES=HCL/Char.cpp HCL/String.cpp HCL/StringData.cpp kernel.cpp boot.s
-OBJECTS:=SOURCES
-OBJECTS:= $(patsubst %.asm,%.o,$(SOURCES))
-OBJECTS:= $(patsubst %.s,%.o,$(SOURCES))
-OBJECTS:= $(patsubst %.c,%.o,$(SOURCES))
-OBJECTS:= $(patsubst %.cpp,%.o,$(SOURCES))
-OBJECTS:= $(patsubst %.cxx,%.o,$(SOURCES))
-OBJECTS:= $(patsubst %.c++,%.o,$(SOURCES))
+SOURCES=gdt.asm \
+	rtp.asm \
+	boot.s \
+	paging.s \
+	kernel.cpp \
+	HCL/Char.cpp \
+	HCL/String.cpp
+
+#end
+
+OBJECTS:=$(SOURCES)
+OBJECTS:= $(patsubst %.asm,$(OBJDIR)%.asm.o,$(OBJECTS))
+OBJECTS:= $(patsubst %.s,$(OBJDIR)%.s.o,$(OBJECTS))
+OBJECTS:= $(patsubst %.c,$(OBJDIR)%.c.o,$(OBJECTS))
+OBJECTS:= $(patsubst %.cpp,$(OBJDIR)%.cpp.o,$(OBJECTS))
+OBJECTS:= $(patsubst %.cxx,$(OBJDIR)%.cxx.o,$(OBJECTS))
+OBJECTS:= $(patsubst %.c++,$(OBJDIR)%.c++.o,$(OBJECTS))
 
 SFILES=$(SOURCES)
 TARGET=$(DISTNAME).bin
 
 all:	_welcome clean build iso qemu
+	@echo -en
 #	$(compiling) boot.s
 #	~/opt/cross/bin/i686-elf-as boot.s -o boot.o > boot.log
 #	~/opt/cross/bin/i686-elf-as paging.s -o paging.o
 #	yasm rtp.asm -o rtp.o -f elf32
 #	yasm gdt.asm -o gdt.o -f elf32
-#	~/opt/cross/bin/i686-elf-gcc -c src/tstream.c -o tstream.o -O2
 #	~/opt/cross/bin/i686-elf-g++ -c kernel.cpp -o kernel.o -O2 -ffreestanding -Wall -Wextra -Wmaybe-uninitialized -fno-exceptions -std=gnu++11 -fno-rtti -fpermissive>/dev/null
 #	echo "done."
 #	~/opt/cross/bin/i686-elf-g++ -T link.ld -o os365.bin -O2 -nostdlib paging.o rtp.o gdt.o boot.o kernel.o -lgcc > linker.log
@@ -46,7 +56,7 @@ all:	_welcome clean build iso qemu
 #Compilation definitions
 %.s:
 	@echo -e " \e[0;32m"$@"\e[0m"
-	@$(CPREFIX)as  -c $(SRCDIR)$@ -o $(OBJDIR)$@.o -DDISTNAME=$(DISTNAME) $(ASFLAGS)
+	@$(CPREFIX)as  -c $(SRCDIR)$@ -o $(OBJDIR)$@.o -DDISTNAME=$(DISTNAME) $(SFLAGS)
 %.c:
 	@echo -e " \e[0;32m"$@"\e[0m"
 	@$(CPREFIX)gcc -c $(SRCDIR)$@ -o $(OBJDIR)$@.o -DDISTNAME=$(DISTNAME) $(CFLAGS)
@@ -55,14 +65,12 @@ all:	_welcome clean build iso qemu
 	@$(CPREFIX)g++ -c $(SRCDIR)$@ -o $(OBJDIR)$@.o -DDISTNAME=$(DISTNAME) $(CXXFLAGS)
 %.asm:
 	@echo -e " \e[0;32m$@\e[0m"
-	@yasm             $(SRCDIR)$@ -o $(OBJDIR)$@.o -DDISTNAME=$(DISTNAME)
+	@yasm             $(SRCDIR)$@ -o $(OBJDIR)$@.o -DDISTNAME=$(DISTNAME) $(ASMFLAGS)
 
 # Just print messages; no work done
 _welcome:
 	@echo -e " \e[0;32mMakefile for\e[0m \e[1;36m$(DISTNAME)\e[0m \e[0;36mv$(VERSION)\e[0m\n"
 	@mkdir -p $(OBJDIR) $(BINDIR) $(OBJDIR)/HCL
-	@echo "Sources: $(SOURCES);"
-	@echo "Objects: $(OBJECTS);"
 _build:
 	@echo -e " \e[1;34m==>\e[0m \e[1mBuilding\e[0m"
 _clean:
@@ -84,18 +92,34 @@ compile: _welcome         _compile  $(SOURCES)
 	@echo -e " \e[1;34m==>\e[0m \e[1;32mCompilation success\e[0m"
 
 link:    _welcome compile _link
-	@gcc $(OBJECTS) link.ld -o $(TARGET) $(LINKFLAGS)
+	@echo -e " \e[0;32m$(TARGET)\e[0m"
+	@$(CPREFIX)gcc $(OBJECTS) -T link.ld -o $(TARGET) $(LINKFLAGS)
+	@echo -e " \e[1;34m==>\e[0m \e[1;32mLink success\e[0m"
 
 build:   _welcome         _build    compile link
+	@echo -e " \e[1;34m==>\e[0m \e[1;32mBuild success\e[0m"
 
 clean:   _welcome         _clean
 	@rm *.o *.iso *.bin &> /dev/null | true
 
-iso:     _welcome         _iso
-	@cp $(TARGET) isodir/boot/$(TARGET)
+
+# Resu
+
+grub:    _welcome         _grub
+	@echo\
+"menuentry "Smidgen" \
+{ \
+	multiboot /boot/Smidgen.bin \
+	GRUB_GFXMODE=1024x768x16 \
+}" > isodir/grub.cfg
+	@echo -e " \e[1;34m==>\e[0m \e[1;32mGRUB success\e[0m"
+
+iso:     _welcome grub    _iso
 	@mkdir -p isodir/boot/grub
+	@cp $(TARGET) ./isodir/boot/$(TARGET)
 	@cp isodir/grub.cfg isodir/boot/grub/
-	@grub-mkrescue -o os365.iso isodir > isomake.log
+	@grub-mkrescue -o $(ISO) isodir
+	@echo -e " \e[1;34m==>\e[0m \e[1;32mISO success\e[0m"
 
 qemu:   _welcome          _qemu
 	@qemu-system-i386 -cdrom $(ISO)
@@ -105,5 +129,6 @@ qemu:   _welcome          _qemu
 
 git:    _welcome          _git
 	@git add *
-	@git commit * -m "make git"
+	@git commit -m "make git"
 	@git push
+	@echo -e " \e[1;34m==>\e[0m \e[1;32mGIT success\e[0m"
