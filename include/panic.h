@@ -1,10 +1,10 @@
 #ifndef __PANIC_H
 #define __PANIC_H
-#include "graphics.h"
+#include "FbGraphics.hpp"
 #include "strfcn.h"
 #include "mem.h"
 #include "fonts.h"
-#include "klog.h"
+
 void nop(){}
 
 uint32_t eax,ebx,ecx,edx,esi,edi;

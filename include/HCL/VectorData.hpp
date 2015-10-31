@@ -23,9 +23,10 @@ namespace Hcl
             T* _begin;
             T* _end;
             T* _endall;
-            uint64_t refs;
 
         public:
+            uint64_t refs;
+
             uint64_t getSize() const;
             uint64_t getAlloc() const;
             bool isEmpty() const;
@@ -33,7 +34,7 @@ namespace Hcl
             void realloc();
             void resize();
 
-            void pushBack();
+            void pushBack(const T&);
             void popBack();
 
             void erase(uint64_t);
@@ -41,6 +42,8 @@ namespace Hcl
             void fit();
             void clear();
 
+            T&   first();
+            T&   last ();
             T&   at          (uint64_t);
             T&   operator [] (uint64_t);
             bool operator == (const VectorData<T>&) const;

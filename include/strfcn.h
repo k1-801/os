@@ -1,7 +1,6 @@
 #ifndef STRFCN_H
 #define STRFCN_H
 
-#include "graphics.h"
 #include <stdarg.h>
 
 int atoi(char* string)

@@ -3,6 +3,8 @@
 namespace Hcl
 {
     template <class T>
+    Vector<T>::Vector(){}
+    template <class T>
     Vector<T>::Vector(uint64_t n)
     {
         data = new VectorData<T>(n);
@@ -18,31 +20,49 @@ namespace Hcl
         data = d;
         ++(d->refs);
     }
+
+    template <class T>
+    void Vector<T>::_cow()
+    {
+        if(!data)
+        {
+            data = allocator->allocate(sizeof(VectorData<T>));
+        }
+        if(data->refs > 1)
+        {
+            --(data->refs);
+            data = allocator->copy(data, sizeof(VectorData<T>));
+            data->refs = 1;
+        };
+    }
     
     template <class T>
     void Vector<T>::pushBack(const T& e)
     {
-        if(data->refs > 1)
-        {
-            --(data->refs);
-            data = allocator->copy(data);
-            data->refs = 1;
-        }
-        if(data->_endall == data->_end)
-        {
-            data->realloc(data->size() * 2);
-        }
-        *(data->_end) = e;
-        ++(data->_end);
+        _cow();
+        data->pushBack(e);
     }
     
     template <class T>
     void Vector<T>::popBack()
     {
-        if(data->size() > 1)
-        {
-            data->_end->~T();
-            --data->_end;
-        }
+        _cow();
+        data->popBack();
+    }
+    
+    template <class T>
+    T& Vector<T>::first()
+    {
+        return data->first(); 
+    }
+    template <class T>
+    T& Vector<T>::last()
+    {
+        return data->last();
+    }
+    template <class T>
+    T& Vector<T>::at(uint64_t n)
+    {
+        return data->at(n);
     }
 }

@@ -24,6 +24,18 @@ namespace Hcl
     }
     
     template <class T>
+    T& VectorData<T>::first()
+    {
+        return *_begin;
+    }
+    
+    template <class T>
+    T& VectorData<T>::last()
+    {
+        return *(_end - 1);
+    }
+    
+    template <class T>
     T& VectorData<T>::at(uint64_t n)
     {
         return *(_begin + n);

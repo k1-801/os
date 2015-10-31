@@ -1,7 +1,7 @@
 #ifndef __KBD_H
 #define __KBD_H
 #include "io.h"
-#include "graphics.h"
+#include "FbGraphics.hpp"
 void waitForKey(int key)
 {
 	char c;

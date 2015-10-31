@@ -4,7 +4,7 @@ namespace Hcl
 {
     Color::operator uint32_t()
     {
-      return (a << 6) | (r << 4) | (g << 2) | b;
+        return (a << 6) | (r << 4) | (g << 2) | b;
     }
 
     Color& Color::operator *= (long double ld)
@@ -17,11 +17,11 @@ namespace Hcl
     
     Color& Color::operator += (const Color& a)
     {
-      r = r * (1 - a) + a.r * a.a;
-      g = g * (1 - a) + a.g * a.a;
-      b = b * (1 - a) + a.b * a.a;
-      a = a * (1 - a) + a.a * a.a;
-      return *this;
+        r = r * (1 - a) + a.r * a.a;
+        g = g * (1 - a) + a.g * a.a;
+        b = b * (1 - a) + a.b * a.a;
+        a = a * (1 - a) + a.a * a.a;
+        return *this;
     }
 
     Color operator * (const Color& a, long double ld)

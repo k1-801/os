@@ -86,27 +86,8 @@ bool mSet;
 #define VGA__DAC_ADDR_W 0x3c8  //pallete, write address
 #define VGA__DAC_DATA 0x3c9    //pallete, data
 #define VGA__DAC_MASK 0x3c6    //pallete, bit mask
-vbe_info_t vbeMode;
 
-typedef enum
-{
-	BLACK = 0,
-	BLUE = 0x0000EE,
-	GREEN = 0x00EE00,
-	CYAN = 0x33EE33,
-	RED = 0xEE0000,
-	MAGENTA = 0x770077,
-	BROWN = 0x964B00,
-	LIGHT_GREY = 0xAAAAAA,
-	DARK_GREY = 0x777777,
-	LIGHT_BLUE = 0x0000FF,
-	LIGHT_GREEN = 0x00FF00,
-	LIGHT_CYAN = 0x00FFFF,
-	LIGHT_RED = 0xFF0000,
-	LIGHT_MAGENTA = 0xDD00DD,
-	LIGHT_BROWN = 0xffff00,
-	WHITE = 0xFFFFFF,
-} colors;
+vbe_info_t vbeMode;
 
 const char *roundLT = "\
 0000022222222222\
@@ -182,15 +163,6 @@ const char *roundRB = "\
 ";
 
 //VGA register structure
-typedef struct
-{
-    byte
-    gen_mis,
-    seq[5],
-    crt[25],
-    gct[9],
-    act[5];
-}vgaregs_t;
 byte PAL16[48]=
 {
     0x00,0x00,0x00,0x00,0x00,0x80,0x00,0x80,0x00,0x00,0x80,0x80,0x80,0x00,0x00,
@@ -207,44 +179,14 @@ byte PAL16[48]=
 0xff,0xff,0xff
 };
 */
-//tables for horizontal configurations
-//SEQ_CLK,SEQ_MEM,CRT_HTO,CRT_HDE,CRT_HBS,CRT_HBE,CRT_HRS,CRT_HRE,CRT_OFF,GCT_GMO,GCT_MIS,ACT_ATB
-byte tbl_hor_txt40[12]={0x08,0x00,0x2d,0x27,0x28,0x10,0x2b,0xa0,0x14,0x10,0x0e,0x00};
-byte tbl_hor_txt80[12]={0x00,0x00,0x5f,0x4f,0x50,0x02,0x55,0x81,0x28,0x10,0x0e,0x00};
-byte tbl_hor_txt90[12]={0x00,0x00,0x6b,0x59,0x5a,0x0e,0x5f,0xac,0x2d,0x10,0x0e,0x00};
-                                                    //0x5e,0xaa
-byte tbl_hor_gra640[12]={0x01,0x04,0x5f,0x4f,0x50,0x02,0x54,0x80,0x28,0x00,0x05,0x01};
-                                                     //0x55,0x81
-byte tbl_hor_gra720[12]={0x01,0x04,0x6b,0x59,0x5a,0x0e,0x5e,0xaa,0x2d,0x00,0x05,0x01};
-                                                     //0x5f,0xac
-byte tbl_hor_gra320[12]={0x01,0x04,0x5f,0x4f,0x50,0x02,0x54,0x80,0x28,0x40,0x05,0x41};
-                                                     //0x55,0x81
-byte tbl_hor_gra360[12]={0x01,0x04,0x6b,0x59,0x5a,0x0e,0x5e,0xaa,0x2d,0x40,0x05,0x41};
-                                                     //0x5f,0xac
 
-//tables for vertical configurations
-//GEN_MIS,CRT_VTO,CRT_MSB,CRT_MSL,CRT_VRS,CRT_VRE,CRT_VDE,CRT_VBS,CRT_VBE
-byte tbl_ver_txt20_12[9]={0xc0,0x0b,0x3e,0xcb,0xea,0x0c,0xdf,0xe7,0x04};
-byte tbl_ver_txt25_8[9]={0x40,0xbf,0x1f,0xc7,0x9c,0x2e,0x8f,0x96,0xb9};
-byte tbl_ver_txt25_14[9]={0x80,0xbf,0x1f,0x4d,0x83,0x35,0x5d,0x63,0xba};
-byte tbl_ver_txt25_16[9]={0x40,0xbf,0x1f,0x4f,0x9c,0x2e,0x8f,0x96,0xb9};
-byte tbl_ver_txt30_8[9]={0xc0,0x0b,0x3e,0xc7,0xea,0x0c,0xdf,0xe7,0x04};
-byte tbl_ver_txt30_16[9]={0xc0,0x0b,0x3e,0x4f,0xea,0x0c,0xdf,0xe7,0x04};
-byte tbl_ver_txt40_12[9]={0xc0,0x0b,0x3e,0x4b,0xea,0x0c,0xdf,0xe7,0x04};
-byte tbl_ver_txt50_8[9]={0x40,0xbf,0x1f,0x47,0x9c,0x2e,0x8f,0x96,0xb9};
-byte tbl_ver_txt60_8[9]={0xc0,0x0b,0x3e,0x47,0xea,0x0c,0xdf,0xe7,0x04};
-byte tbl_ver_gra200[9]={0x40,0xbf,0x1f,0x41,0x9c,0x2e,0x8f,0x96,0xb9};
-byte tbl_ver_gra240[9]={0xc0,0x0b,0x3e,0x41,0xea,0x0c,0xdf,0xe7,0x04};
-byte tbl_ver_gra350[9]={0x80,0xbf,0x1f,0x40,0x83,0x35,0x5d,0x63,0xba};
-byte tbl_ver_gra400[9]={0x40,0xbf,0x1f,0x40,0x9c,0x2e,0x8f,0x96,0xb9};
-byte tbl_ver_gra480[9]={0xc0,0x0b,0x3e,0x40,0xea,0x0c,0xdf,0xe7,0x04};
 
 //tables for video modes
 //SEQ_CLK,ACT_OFF,CRT_MOD
-byte tbl_mod_txt8p[]={0x01,0x00,0x00};
-byte tbl_mod_txt9p[]={0x00,0x08,0x00};
-byte tbl_mod_gra16c[]={0x01,0x00,0x40};
-byte tbl_mod_gra256c[]={0x01,0x00,0x40};
+byte tbl_mod_txt8p[3]={0x01,0x00,0x00};
+byte tbl_mod_txt9p[3]={0x00,0x08,0x00};
+byte tbl_mod_gra16c[3]={0x01,0x00,0x40};
+byte tbl_mod_gra256c[3]={0x01,0x00,0x40};
 
 //functions
 
@@ -956,7 +898,7 @@ void vgaPutchar(char c,word x,word y,uint32_t fg,uint32_t bg, bool dnf=false)
 	int i,j;
 	i = 0;
 	j = 0;
-	if(c=='@')
+/*	if(c=='@')
 	{
 		setupFonts();
 		c=' ';
@@ -965,7 +907,7 @@ void vgaPutchar(char c,word x,word y,uint32_t fg,uint32_t bg, bool dnf=false)
 	{
 		setRusFonts();
 		c=' ';
-	}
+	}*/
 	if(c=='\b')
 	x-=8;
 	int count = 0;
@@ -989,12 +931,12 @@ void vgaPutchar(char c,word x,word y,uint32_t fg,uint32_t bg, bool dnf=false)
 		i++;
 	}
 }
-void vgaWriteStr(word x,word y,const char * str,uint32_t fg,uint32_t bg)
+void vgaWriteStr(uint64_t x, uint64_t y, const char * str, uint32_t fg, uint32_t bg)
 {
-    for(int i; i != strlen(str); i++)
+    uint64_t i;
+    for(i = 0; str[i]; ++i)
     {
-        vgaPutchar(str[i],x,y,fg,bg);
-        x = x+8;
+        vgaPutchar(str[i], x + i * 8, y, fg, bg);
 	}
 }
 void vgaWriteStr(word x,word y,const char * str,uint32_t fg,uint32_t bg, bool dnf)
@@ -1006,45 +948,6 @@ void vgaWriteStr(word x,word y,const char * str,uint32_t fg,uint32_t bg, bool dn
     }
 }
 
-/*void vgaPutchar(wchar_t c,word x,word y,byte fg,byte bg)
-{
-	int i,j;
-	i = 0;
-	j = 0;
-	int count = 0;
-	while(i != 8)
-	{
-		j = 0;
-		while(j != 8)
-		{
-			if(font[(word)c][count] == '1')
-			{
-				VGAPix16(x+j,y+i,fg,640,480);
-			}
-			else
-			{
-				VGAPix16(x+j,y+i,bg,640,480);
-			}
-			j++;
-			count++;
-		}
-		i++;
-	}
-}
-void vgaWriteStr(word x,word y,const wchar_t * str,byte fg,byte bg)
-{
-	word oldx=x;
-	for(int i; i != strlen(str); i++)
-	{
-		//switch(str[i])
-		//{
-		//case 'ф': vgaPutchar('ф',x,y,fg,bg);
-		//default:
-		vgaPutchar(str[i],x,y,fg,bg);
-		//}
-		x = x+8;
-	}
-}*/
 void putpix(uint32_t color)
 {
 	VGAPix16(x,y,0xf0,640,480);
@@ -1058,7 +961,7 @@ uint32_t colorMix(uint32_t c1, uint32_t c2)
 {
 	return c1+c2-(16777216-min(c1,c2));
 }
-char a[] = "00000000\n\
+const char* a = "00000000\n\
 00000000\n\
 00000000\n\
 00000000\n\
@@ -1101,7 +1004,7 @@ void vLine(word x1,word y1,word length,uint32_t color)
 		VGAPix16(x1+i,y1,color,640,480);
 	}
 }
-char bitmap[] = "10101010\
+const char* bitmap = "10101010\
 10101010\
 10101010\
 10101010\

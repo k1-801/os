@@ -17,6 +17,7 @@ class Allocator
     private:
         void* _kernelStart;
         void* _kernelEnd;
+        void* _last;
         //PageTable* pageTable;
 
     public:

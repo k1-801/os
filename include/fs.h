@@ -1,12 +1,14 @@
 #ifndef __FS_H
 #define __FS_H
 
+/*
 //Small RamFS driver.
 //Directory 0 is the root of the filesystem.
 #include "graphics.h"
 #include "mem.h"
 #include "strfcn.h"
 #define MAX_FSENTS	65536
+
 
 enum fsentType
 {
@@ -47,4 +49,6 @@ void initFS()
 	ramfs365[0]=nullFSEnt;
 	registerDirectory("",nullFSEnt);
 }
+*/
+
 #endif

@@ -1,10 +1,9 @@
 #include "mem.h"
 #include "panic.h"
-#include "graphics.h"
+#include "FbGraphics.hpp"
 #include "user.h"
 #include "zbase.h"
 #include "cmos.h"
-#include "klog.h"
 /* Defines an IDT entry */
 struct idt_entry
 {

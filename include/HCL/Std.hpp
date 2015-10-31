@@ -11,11 +11,33 @@
  * @author k1-801 (Kychanov Dmitry)
  */
 
-// C
-#include <stdint.h>
+#if defined(__linux__)
+#error "Compiling is not allowed without the cross-compiler"
+#endif
 
-#define HCL_CONCAT(a,b) a##b
-#define HCL_QUOTATE(a) #a
+#if __STDC_HOSTED__
+#warning "__STDC_HOSTED__ is defined, fixing"
+#undef __STDC_HOSTED__
+#define __STDC_HOSTED__ 0
+#endif
+
+#ifndef DISTNAME
+#warning DISTNAME is not set, setting to "Unknown"
+#define DISTNAME "Unknown"
+#endif
+
+#ifndef VERSION
+#warning VERSION if not set, setting to "Unknown"
+#define VERSION "Unknown"
+#endif
+
+#define HCL__CONCAT(a,b) a##b
+#define HCL__QUOTATE(a) #a
+#define HCL_CONCAT(a,b) HCL__CONCAT(a,b)
+#define HCL_QUOTATE(a) HCL__QUOTATE(a)
+
+#include <stdint.h>
+#include <stddef.h>
 
 namespace Hcl
 {

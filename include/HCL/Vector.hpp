@@ -20,9 +20,13 @@ namespace Hcl
     template<class T>
     class Vector
     {
+        private:
+            void _cow();
+            
         public:
             VectorData<T>* data; // Please do not use in your code, it is public for debugging purposes
 
+            Vector();
             Vector(uint64_t);
             Vector(uint64_t, const T&);
             Vector(VectorData<T>*);
@@ -43,6 +47,10 @@ namespace Hcl
             void fit();
             void swap(Vector<T>&);
             
+            T&   first();
+            T&   last ();
+            T&   at          (uint64_t);
+            T&   operator [] (uint64_t);
             bool operator == (const Vector&) const;
             bool operator != (const Vector&) const;
     };

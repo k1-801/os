@@ -1,11 +1,15 @@
 //OS365 main kernel file.
 
-#include "../include/stdinclude.h"
-
 #define __os365__
+
 #if !defined(__cplusplus)
 #include <stdbool.h>
 #endif
+
+#include "../include/HCL/Std.hpp"
+#include "../include/FbGraphics.hpp"
+#include "../include/Syslog.hpp"
+
 #include "../include/mboot.h"
 #include "../include/vgaterm.h" //VGA text driver
 #include "../include/panic.h" //kernel panic
@@ -15,7 +19,6 @@
 #include "../include/mouse.h"
 #include "../include/scrio.h"
 #include "../include/paging.h"
-#include "../include/klog.h"
 #include "../include/ahci.h"
 #if defined(__cplusplus)
 extern "C" {
@@ -29,8 +32,8 @@ void kernel_main(struct mboot_info_struct *mbinfo)
 {
 	//	addr = (int*) kernel_main;
 	//
-	log("[LOAD] " QUOTATE(DISTNAME) " kernel is started. Disabling interrupts...");
-	log("[DISCLAIMER] " QUOTATE(DISTNAME) " is totally free. If you have bought it, please report us seller's contact information to prevent further project law violation.");
+	log("[LOAD] " DISTNAME " kernel is started. Disabling interrupts...");
+	log("[DISCLAIMER] " DISTNAME " is totally free. If you have bought it, please report us seller's contact information to prevent further project law violation.");
 	asm("cli");
 	log("done.");
 	log("[INFO] Setting up GDT...");

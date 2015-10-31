@@ -1,6 +1,9 @@
 #include "../include/GoMenu.hpp"
 
-#include "../include/graphics.h"
+#include "../include/HCL/Std.hpp"
+#include "../include/FbGraphics.hpp"
+#include "../include/Syslog.hpp"
+#include "../include/Window.hpp"
 // C
 #include <stdint.h>
 
@@ -9,8 +12,8 @@ Hcl::Vector<GoMenuEntry> GoMenu::_c;
 void GoMenu::main()
 {
     log("[GoMenu]: started");
-    window goMenu(148,200,0,768-208,/*locale->tr(*/"Go! Menu"/*)*/  /*tNames[LANG_RUS][LC_NAME_GOMENU]*/,"");
-    drawObj(goMenu,false);
+    Window goMenu("Go! Menu", 0, 560, 148, 200);
+    drawObj(&goMenu,false);
 
     GoMenuEntry* en = 0;
     int i, s = 0;
@@ -43,14 +46,14 @@ void GoMenu::main()
                 break;
         }
     }
-    delWin(goMenu);
-	drawWallpaper();
-	drawDesktop();
+    delWin(&goMenu);
+    drawWallpaper();
+    drawDesktop();
     if(en)
         en->callback();
 }
 
-void GoMenu::addEntry(GomenuEntry& en)
+void GoMenu::addEntry(GoMenuEntry& en)
 {
 /*    if(en.uid >= _c.size())
         _c.resize(en.uid);

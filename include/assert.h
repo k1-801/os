@@ -1,8 +1,9 @@
 #ifndef __ASSERT_H
 #define __ASSERT_H
+
+#include "Window.hpp"
 #include "panic.h"
 #include "strfcn.h"
-#include "klog.h"
 #include "zbase.h"
 int oldline;
 char *oldfile;
@@ -10,8 +11,8 @@ char *oldfile;
 #define _assertionFailed(check) drawAFailedWnd();
 void drawAFailedWnd()
 {
-	window afailed(400,50,100,120,QUOTATE(DISTNAME)" Internal Error","");
-	drawObj(afailed);
+	Window afailed(DISTNAME" Internal Error", 100, 120, 400, 50);
+	drawObj(&afailed);
 	char *asserterr;
 	strcat(asserterr,"Assertion failed at line ");
 	strcat(asserterr,itoa(oldline));
