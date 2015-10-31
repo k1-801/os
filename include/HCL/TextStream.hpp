@@ -3,9 +3,11 @@
 #define TSTREAM_H
 
 /**
- * k1-801's file abstraction
- * Basic template struct for text stream
- * Struct fields are pointers to the action functions
+ * This file is a part of Haont Common Library for SmidgenOS
+ * It shold be distributed freely with all the rest of the library source code
+ *
+ * @project HCL
+ * @author k1-801 (Kychanov Dmitry)
  */
 
 #include "stdinclude.h"

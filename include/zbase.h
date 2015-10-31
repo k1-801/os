@@ -44,7 +44,42 @@ void printw(const char * msg, window wnd);
 bool drawObj(window target,bool);
 void z_init();
 
-bool drawObj(window target,bool noBtmCrn=true)
+bool drawObj(window target,uint32_t color=LIGHT_GREY,uint32_t captColor=LIGHT_BLUE)
+{
+	
+	fillRect(target.width-32,target.height-32,target.x+16,target.y+16,color);
+	fillRect(16,target.height-32,target.x,target.y+16,color);
+	fillRect(16,target.height-32,target.x+(target.width-16),target.y+16,color);
+	fillRect(target.width-32,16,target.x+16,target.y+(target.height-16),color);
+	fillRect(target.width-32,16,target.x+16,target.y,captColor);
+	//drawGradient(target.x,target.y,target.x+target.width,target.y+16,0x000000,0xFF0000);
+	//drawRect(target.width,target.height,target.x,target.y,BLACK);
+	//vLine(target.x,target.y,target.height,DARK_GREY);
+	//vLine(target.x+target.width,target.y,target.height,DARK_GREY);
+	//hLine(target.x,target.y+target.height,target.width,DARK_GREY);
+	//hLine(target.x+target.width,target.y+target.height,target.width,DARK_GREY);
+		vLine(target.x+16,target.y,target.width-32,DARK_GREY);
+			vLine(target.x+16,target.y+target.height-1,target.width-32,DARK_GREY);
+						hLine(target.x+1,target.y+16,target.height-32,DARK_GREY);
+			
+			hLine(target.x+target.width,target.y+16,target.height-32,DARK_GREY);
+		vLine(target.x+16,target.y+1,target.width-32,DARK_GREY);
+			vLine(target.x+16,target.y+target.height-2,target.width-32,DARK_GREY);
+						hLine(target.x+2,target.y+16,target.height-32,DARK_GREY);
+			
+			hLine(target.x+target.width-1,target.y+16,target.height-32,DARK_GREY);
+			
+	drawBitmap(roundLT,target.x+1,target.y,16,16,BGCOLOR,captColor,DARK_GREY,0,0,true);
+	drawBitmap(roundRT,target.x+1+target.width-16,target.y,16,16,BGCOLOR,captColor,DARK_GREY,0,0,true);
+	drawBitmap(roundLB,target.x+1,target.y+target.height-16,16,16,BGCOLOR,color,DARK_GREY,0,0,true);
+	drawBitmap(roundRB,target.x+1+target.width-16,target.y+target.height-16,16,16,BGCOLOR,color,DARK_GREY,0,0,true);
+	vLine(target.x,target.y+16,target.width,DARK_GREY);
+	vgaWriteStr(target.x+5,target.y+5,target.caption,LIGHT_GREEN,captColor);
+	vgaWriteStr(target.x+5,target.y+21,target.text,MAGENTA,color);
+
+}
+
+bool drawObj(window target,bool noBtmCrn)
 {
 	
 	fillRect(target.width-32,target.height-32,target.x+16,target.y+16,LIGHT_GREY);
@@ -70,27 +105,28 @@ bool drawObj(window target,bool noBtmCrn=true)
 	//vLine(target.x+target.width,target.y,target.height,DARK_GREY);
 	//hLine(target.x,target.y+target.height,target.width,DARK_GREY);
 	//hLine(target.x+target.width,target.y+target.height,target.width,DARK_GREY);
-		vLine(target.x+16,target.y,target.width-32,DARK_GREY);
-			vLine(target.x+16,target.y+target.height-1,target.width-32,DARK_GREY);
-						hLine(target.x+1,target.y+16,target.height-32,DARK_GREY);
-			
-			hLine(target.x+target.width,target.y+16,target.height-32,DARK_GREY);
-		vLine(target.x+16,target.y+1,target.width-32,DARK_GREY);
-			vLine(target.x+16,target.y+target.height-2,target.width-32,DARK_GREY);
-						hLine(target.x+2,target.y+16,target.height-32,DARK_GREY);
-			
-			hLine(target.x+target.width-1,target.y+16,target.height-32,DARK_GREY);
-			
-	drawBitmap(roundLT,target.x+1,target.y,16,16,BGCOLOR,LIGHT_BLUE,DARK_GREY,0,0,true);
-	drawBitmap(roundRT,target.x+1+target.width-16,target.y,16,16,BGCOLOR,LIGHT_BLUE,DARK_GREY,0,0,true);
-	if(noBtmCrn)
-	{
-	drawBitmap(roundLB,target.x+1,target.y+target.height-16,16,16,BGCOLOR,LIGHT_GREY,DARK_GREY,0,0,true);
-	drawBitmap(roundRB,target.x+1+target.width-16,target.y+target.height-16,16,16,BGCOLOR,LIGHT_GREY,DARK_GREY,0,0,true);
-	}
-	vLine(target.x,target.y+16,target.width,DARK_GREY);
-	vgaWriteStr(target.x+5,target.y+5,target.caption,LIGHT_GREEN,LIGHT_BLUE);
-	vgaWriteStr(target.x+5,target.y+21,target.text,MAGENTA,LIGHT_GREY);
+
+    vLine(target.x+16,           target.y,                 target.width-32,  DARK_GREY);
+    vLine(target.x+16,           target.y+target.height-1, target.width-32,  DARK_GREY);
+
+    hLine(target.x+1,            target.y+16,              target.height-32, DARK_GREY);
+    hLine(target.x+target.width, target.y+16,              target.height-32, DARK_GREY);
+    vLine(target.x+16,           target.y+1,               target.width-32,  DARK_GREY);
+    vLine(target.x+16,           target.y+target.height-2, target.width-32,  DARK_GREY);
+
+    hLine(target.x+2,             target.y+16,             target.height-32, DARK_GREY);
+    hLine(target.x+target.width-1,target.y+16,             target.height-32, DARK_GREY);
+
+    drawBitmap(roundLT,target.x+1,target.y,16,16,BGCOLOR,LIGHT_BLUE,DARK_GREY,0,0,true);
+    drawBitmap(roundRT,target.x+1+target.width-16,target.y,16,16,BGCOLOR,LIGHT_BLUE,DARK_GREY,0,0,true);
+    if(noBtmCrn)
+    {
+        drawBitmap(roundLB,target.x+1,target.y+target.height-16,16,16,BGCOLOR,LIGHT_GREY,DARK_GREY,0,0,true);
+        drawBitmap(roundRB,target.x+1+target.width-16,target.y+target.height-16,16,16,BGCOLOR,LIGHT_GREY,DARK_GREY,0,0,true);
+    }
+    vLine(target.x,target.y+16,target.width,DARK_GREY);
+    vgaWriteStr(target.x+5,target.y+5,target.caption,LIGHT_GREEN,LIGHT_BLUE);
+    vgaWriteStr(target.x+5,target.y+21,target.text,MAGENTA,LIGHT_GREY);
 
 }
 void delWin(window wnd)

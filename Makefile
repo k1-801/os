@@ -1,4 +1,9 @@
 SHELL=/bin/bash
+
+## Common visual building Makefile 
+## Author: k1-801 (Kychanov Dmitry)
+## Edit as for your project
+
 DISTNAME=Smidgen
 VERSION=0.3.0
 
@@ -20,6 +25,7 @@ SOURCES=gdt.asm \
 	boot.s \
 	paging.s \
 	kernel.cpp \
+	GoMenu.cpp \
 	HCL/Char.cpp \
 	HCL/String.cpp
 

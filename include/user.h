@@ -10,12 +10,16 @@
 #include "strfcn.h"
 #include "locale.h"
 #include "fs.h"
+//#include "cli.h"
 #include "cmos.h"
 #include "assert.h"
 #include "klog.h"
 //#include "sprites.h"
 #define MAX_COMMANDS 100
 #define paste(front,back) front ## back
+
+#include "GoMenu.hpp"
+
 //Semigraphics table.
 bool fRun=true;
 const char *logo = "\
@@ -55,7 +59,7 @@ char scancodetochar(int scan)
 {
 	return scancode[scan+1];
 }
-char OS365Logo[] = "4444444444444444444444444444444444444444\
+const char* OS365Logo = "4444444444444444444444444444444444444444\
 4444444444444444444444444444444444444444444444444444444444444\
 4444444444444422244444422244444444444444\
 4444444444444244424444244444444444444444\
@@ -267,6 +271,40 @@ const char *clockicon="0000000000000000\
 0000011313110000\
 0000001111100000\
 ";
+const char *mswpicon="0000000000000000\
+0000000001110000\
+0000000010001000\
+0000000100400040\
+0000000104004004\
+0000111111110000\
+0001111111111000\
+0011111111111100\
+0011111111111100\
+0011111111111100\
+0011111111111100\
+0011111111111100\
+0011111111111100\
+0011111111111100\
+0001111111111000\
+0000111111110000\
+";
+const char *particon="0000000000000000\
+0000000000000000\
+0000000000000000\
+0111111111111110\
+0144442222333310\
+0144442222333310\
+0144442222333310\
+0144442222333310\
+0144442222333310\
+0144442222333310\
+0144442222333310\
+0144442222333310\
+0144442222333310\
+0111111111111110\
+0000000000000000\
+0000000000000000\
+";
 	logo=langicon;
 	//icon declarations started, type there
 	setIconVars(0,authorsicon,"                  ",10,10);
@@ -280,6 +318,9 @@ const char *clockicon="0000000000000000\
 	setIconVars(3,graphicon,tNames[LANG_RUS][LC_NAME_GREDIT],10,40);
 	setIconVars(4,langicon,tNames[LANG_RUS][LC_NAME_LANG],10,132);
 	setIconVars(5,clockicon,tNames[LANG_RUS][LC_NAME_CLOCK],10,162);
+	setIconVars(6,mswpicon,/*tNames[LANG_RUS][LC_NAME_MINESWEEPER]*/ "FIX IT",10,192);
+	setIconVars(7,particon,/*tNames[LANG_RUS][LC_NAME_PIXART]*/ "FIX IT",10,222);
+
 	//vgaPutchar('ф',100,100,LIGHT_RED, BLACK);
 //	setIconVars(2,consoleicon,"Console",10,70);
 	
@@ -307,6 +348,7 @@ void clock()
 	window clock(75,35,20,25,tNames[LANG_RUS][LC_NAME_CLOCK],"");
 	drawObj(clock);
 	char c;
+	unsigned char olds,oldm,oldh;
 	drawLine(0,50,230,450,LIGHT_BROWN);
 	int oldMin;
 	do
@@ -314,6 +356,8 @@ void clock()
 		read_rtc(); //update the time...
 		//and print new time.
 		;
+		if(second!=olds&&second<60)
+		olds++;
 		//hour-=20;
 		if(second>59)
 		{
@@ -322,13 +366,18 @@ void clock()
 		}
 		if(!get_update_in_progress_flag())
 		{
-		vgaWriteStr(clock.x+5,clock.y+21,itoa(hour+3),MAGENTA,LIGHT_GREY);
+		vgaWriteStr(clock.x+5,clock.y+21,itoa(oldh+3),MAGENTA,LIGHT_GREY);
 		vgaWriteStr(clock.x+21,clock.y+21,":",MAGENTA,LIGHT_GREY);
-		vgaWriteStr(clock.x+29,clock.y+21,itoa(minute),MAGENTA,LIGHT_GREY);
+		vgaWriteStr(clock.x+29,clock.y+21,itoa(oldm),MAGENTA,LIGHT_GREY);
 		vgaWriteStr(clock.x+45,clock.y+21,":",MAGENTA,LIGHT_GREY);
-		vgaWriteStr(clock.x+53,clock.y+21,itoa(second),MAGENTA,LIGHT_GREY);
+		vgaWriteStr(clock.x+53,clock.y+21,itoa(olds),MAGENTA,LIGHT_GREY);
 		}
-		
+				if(second<60)
+				olds=second;
+				if(minute!=oldm&&minute<60)
+		oldm=minute;
+						if(hour!=oldh&&hour<60)
+		oldh=hour;
 		//vgaWriteStr(clock.x+5,clock.y+21,__TIME__,MAGENTA,LIGHT_GREY);
 		if(inb(0x60)!=c)
 		{                       
@@ -352,7 +401,7 @@ void showLogs()
 	//int 
 	log("[USER] Started program: Log Viewer");
 	fillRect(1024,768,0,0,BLACK);
-	vgaWriteStr(0,0,"System logs of " QUOTATE(DISTNAME) ". Press X to exit.",WHITE,BLACK);
+	vgaWriteStr(0,0,"System logs of OS365. Press X to exit.",WHITE,BLACK);
 	char c=0;
 	do
 	{
@@ -362,11 +411,155 @@ void showLogs()
 		{
 			vgaWriteStr(0,8+j*8,logs[i],WHITE,BLACK);
 		}
-	}while(c!=charToScancode('x'));
+	}
+	while(c!=charToScancode('x'));
 	if(currLang==LANG_RUS)
-	setRusFonts();
+        setRusFonts();
 	fRun=true;
 	startZ(true);
+}
+#define WHEIGHT 217
+#define WWIDTH 245
+#define WCENTERX 100
+#define WCENTERY 100
+#define RIGHTW WCENTERX + WWIDTH - 5
+#define LEFTW WCENTERX + 5
+#define TOPW WCENTERY + 20
+#define DOWNW WCENTERY + WHEIGHT - 50
+//SYSTEM FUNCTION
+char getScancode() {
+	char c=0;
+	while(1) {
+		if(inb(0x60)!=c) {
+			c=inb(0x60);
+			if(c>0) return c;
+		}
+	}
+}
+
+// REWRITE THIS FUCKING SHIT AS FAST AS YOU CAN!!!
+// STORE IN
+// src/Static.cpp as const char*
+
+//SPRITES
+int en1[64] = { 0,0,0,0xFFFFFF,0xFFFFFF,0,0,0,
+		0,0,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0,0,
+		0,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0,
+		0xFFFFFF,0xFFFFFF,0,0xFFFFFF,0xFFFFFF,0,0xFFFFFF,0xFFFFFF,
+		0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,
+		0,0,0xFFFFFF,0,0,0xFFFFFF,0,0,
+		0,0xFFFFFF,0,0xFFFFFF,0xFFFFFF,0,0xFFFFFF,0,
+		0xFFFFFF,0,0xFFFFFF,0,0,0xFFFFFF,0,0xFFFFFF };
+
+int en2[88] = { 0,0,0xFFFFFF,0,0,0,0,0,0xFFFFFF,0,0,
+		0,0,0,0xFFFFFF,0,0,0,0xFFFFFF,0,0,0,
+		0,0,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0,0,
+		0,0xFFFFFF,0xFFFFFF,0,0xFFFFFF,0xFFFFFF,0xFFFFFF,0,0xFFFFFF,0xFFFFFF,0,
+		0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,
+		0xFFFFFF,0,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0,0xFFFFFF,
+		0xFFFFFF,0,0xFFFFFF,0,0,0,0,0,0xFFFFFF,0,0xFFFFFF,
+		0,0,0,0xFFFFFF,0xFFFFFF,0,0xFFFFFF,0xFFFFFF,0,0,0 };
+
+int en3[96] = { 0,0,0,0,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0,0,0,0,
+		0,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0,
+		0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,
+		0xFFFFFF,0xFFFFFF,0xFFFFFF,0,0,0xFFFFFF,0xFFFFFF,0,0,0xFFFFFF,0xFFFFFF,0xFFFFFF,
+		0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,0xFFFFFF,
+		0,0,0xFFFFFF,0xFFFFFF,0xFFFFFF,0,0,0xFFFFFF,0xFFFFFF,0xFFFFFF,0,0,
+		0,0xFFFFFF,0xFFFFFF,0,0,0xFFFFFF,0xFFFFFF,0,0,0xFFFFFF,0xFFFFFF,0,
+		0,0,0xFFFFFF,0xFFFFFF,0,0,0,0,0xFFFFFF,0xFFFFFF,0,0 };
+
+int plr[91] = { 0,0,0,0,0,0,0x00EE00,0,0,0,0,0,0,
+		0,0,0,0,0,0x00EE00,0x00EE00,0x00EE00,0,0,0,0,0,
+		0,0,0,0,0,0x00EE00,0x00EE00,0x00EE00,0,0,0,0,0,
+		0,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0,
+		0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,
+		0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,
+		0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00,0x00EE00 };
+
+//ARRAY OF BAD GUYS
+int ens[55] = { 1,1,1,1,1,1,1,1,1,1,1,
+		4,2,2,2,2,2,2,2,2,2,2,
+		4,2,2,2,2,2,2,2,2,2,2,
+		5,3,3,3,3,3,3,3,3,3,3,
+		5,3,3,3,3,3,3,3,3,3,3 };
+
+//WINDOW
+
+//VARIABLES
+int ex, ey, px, py, lives = 3, score, hiscore;
+bool ifend = false;
+float ali_spd, plr_spd;
+window wnd(WHEIGHT, WWIDTH, WCENTERX, WCENTERY, "Space Invaders", 0);
+//DRAW FUNCTIONS
+
+void draw_aliens(int x, int y) {
+	for(int i = 0; i < 33; i++) {
+		if(ens[i] == 1) {
+			drawBitmap((const char*)en1, x, y, 8, 8);
+			x += 16;
+		} else if(ens[i] == 4) {
+			y += 18; x -= 160;
+			drawBitmap((const char*)en2, x, y, 11, 8);
+			x += 16;
+		} else if(ens[i] == 2) {
+			drawBitmap((const char*)en2, x, y, 11, 8);
+			x += 16;
+		} else if(ens[i] == 5) {
+			y += 18; x -= 160;
+			drawBitmap((const char*)en3, x, y, 12, 8);
+			x += 16;
+		} else if(ens[i] == 3) {
+			drawBitmap((const char*)en3, x, y, 12, 8);
+			x += 16;
+		}
+	}
+}
+
+void draw_player(int x, int y) {
+	drawBitmap((const char*)plr, x, y, 13, 7);
+}
+
+void draw_score_lives() {
+	vgaWriteStr(LEFTW, TOPW, "SCORE", 0, 0xFFFFFF);
+	vgaWriteStr(WCENTERX + WWIDTH - 70, TOPW, "HI-SCORE", 0, 0xFFFFFF);
+	vgaWriteStr(LEFTW + 10, TOPW + 10, itoa(score), 0, 0xFFFFFF);
+	vgaWriteStr(RIGHTW - 30, TOPW + 10, itoa(hiscore), 0, 0xFFFFFF);
+	vgaWriteStr(WCENTERX + 5, DOWNW + 45, itoa(lives), 0, 0xFFFFFF);
+	for(int i = 0; i < lives; i++) {
+		draw_player(px, py);
+		px += 18;
+	}
+}
+
+void game_over() {
+	drawObj(wnd, 0, 0xEE0000);
+	draw_aliens(ex, ey);
+	draw_score_lives();
+	vgaWriteStr(WCENTERX + 70, TOPW + 50, "GAME OVER", 0, 0xEE0000);
+}
+
+//MAIN FUNCTION
+void spaceInv() {
+	drawObj(wnd, 0, 0x0000EE);
+	draw_score_lives();
+	ali_spd = 0.01;
+	plr_spd = 0.03;
+	while(ey <= DOWNW) {
+		if(getScancode() == 0x4B || px >= LEFTW) px -= plr_spd;
+		else if(getScancode() == 0x4D || px <= RIGHTW) px += plr_spd;
+
+		drawObj(wnd, 0, 0x0000EE);
+		draw_aliens(ex, ey);
+		draw_player(px, py);
+
+		if(ex >= RIGHTW) { ifend = true; ey += 18; }
+		else if(ex <= LEFTW) { ifend = false; ey += 18; }
+
+		if(ifend == true) ex -= ali_spd;
+		else if(ifend == false) ex += ali_spd;
+	}
+	game_over();
 }
 void textEdit()
 {
@@ -381,6 +574,7 @@ void textEdit()
 	char c;
 	window editor(1000,600,10,10,tNames[LANG_RUS][LC_EDITORTITLE],"");
 	drawObj(editor);
+	//spaceInv();
 	//drawBitmap(fatalerror,15,16,16,16,BLACK,LIGHT_GREY,LIGHT_GREEN,LIGHT_BLUE,RED);
 	vgaWriteStr(editor.x+5,editor.y+21,tNames[LANG_RUS][LC_EDITORTIPS],MAGENTA,LIGHT_GREY);
 	//showLogs();
@@ -519,10 +713,121 @@ void about()
 	delWin(info);
 	startZ(true);
 }
+//extern void mario();
+void minesweeper()
+{
+	//mario();
+	//asm("int $83");
+	struct mswpEntry {
+		int x;
+		int y;
+		union {
+			bool isBomb;
+			int num;
+		}u;
+	}entries[24][24];
+	int count=0;
+	int j=0;
+	//srand(rdtsc());
+	for(int i=0; i<22; i++)
+	{
+		for(j=0; j<22; j++,count++)
+		{
+			entries[j][i].x=j;
+			entries[j][i].y=i;
+			//if(rand()%6==0)
+			//entries[j][i].u.isBomb=true;
+		}
+	}
+	int posx=0, posy=0;
+	drawmain();
+	window mswp(225,226,100,100,/*tNames[LANG_RUS][LC_NAME_MINESWEEPER]*/ "FIX IT","");
+	drawObj(mswp);
+	hLine(mswp.x+5,mswp.y+21,200,BLACK);
+	hLine(mswp.x+5+200,mswp.y+21,200,BLACK);
+	vLine(mswp.x+5,mswp.y+21,200,BLACK);
+	vLine(mswp.x+5,mswp.y+21+200,200,BLACK);
+	for(int i=0; i<24*9; i+=9)
+	hLine(mswp.x+5+i,mswp.y+21,200,BLACK);
+	for(int j=0; j<24*9; j+=9)
+	vLine(mswp.x+5,mswp.y+21+j,200,BLACK);
+	char c=0;
+	do
+	{
+		if(inb(0x60)!=c)
+		{
+			c=inb(0x60);
+			if(c>0)
+			{
+                switch(c)
+                {
+                    case 0x4b:drawRect(9,9,mswp.x+5+posx*9,mswp.y+21+posy*9,BLACK);if(posx>0)posx--; drawRect(9,9,mswp.x+5+posx*9,mswp.y+21+posy*9,GREEN);break;
+                    case 0x4d:drawRect(9,9,mswp.x+5+posx*9,mswp.y+21+posy*9,BLACK);if(posx<21)posx++; drawRect(9,9,mswp.x+5+posx*9,mswp.y+21+posy*9,GREEN);break;
+                    case 0x50:drawRect(9,9,mswp.x+5+posx*9,mswp.y+21+posy*9,BLACK);if(posy<21)posy++; drawRect(9,9,mswp.x+5+posx*9,mswp.y+21+posy*9,GREEN);break;
+                    case 0x48:drawRect(9,9,mswp.x+5+posx*9,mswp.y+21+posy*9,BLACK);if(posy>0)posy--; drawRect(9,9,mswp.x    +5+posx*9,mswp.y+21+posy*9,GREEN);break;
+/*					case 0x39: if(entries[posx][posy].u.isBomb==true){sleep(5000);for(int i=0; i < 22; i++){for(int j=0; j<22; j++){if(entries[j][i].u.isBomb==true)vgaPutchar('0',mswp.x+5+j*9+1,mswp.y+21+i*9+1,0xFF0000,LIGHT_GREY);}}vgaWriteStr(mswp.x+5,mswp.y+21,tNames[LANG_RUS][LC_NAME_MINESWEEPER_GAMEOVER],0x87cefa,DARK_GREY);waitForKey(1); delWin(mswp); startZ(true);}else{fillRect(10,10,mswp.x+5+posx*9,mswp.y+21+posy*9,DARK_GREY);				}*/
+                }
+            }
+        }
+        drawRect(9,9,mswp.x+5+posx*9,mswp.y+21+posy*9,GREEN);
+    }
+    while(c!=1);
+    delWin(mswp);
+    startZ(true);
+}
+void pixArt()
+{
+	int posx=0, posy=0;
+	drawmain();
+	uint32_t modeColor=DARK_GREY,outlineColor=GREEN;
+	bool erase=false;
+	window part(910,550,100,100,/*tNames[LANG_RUS][LC_NAME_PIXART]*/ "FIX IT","");
+	drawObj(part);
+	again:
+	drawRect(900,524,part.x+5,part.y+21,DARK_GREY);
+	for(int i=0; i<900; i+=5)
+	hLine(part.x+5+i,part.y+21,524,DARK_GREY);
+	for(int j=0; j<525; j+=5)
+	vLine(part.x+5,part.y+21+j,900,DARK_GREY);
+	char c=0;
+	do
+	{
+		if(inb(0x60)!=c)
+		{
+			c=inb(0x60);
+			if(c>0)
+			{
+				switch(c)
+				{
+					case 0x40:if(!erase){erase=true;outlineColor=RED;}else{erase=false;outlineColor=GREEN;} break;
+					case 0x4b:drawRect(5,5,part.x+5+posx*5,part.y+21+posy*5,DARK_GREY);if(posx>0)posx--; drawRect(5,5,part.x+5+posx*5,part.y+21+posy*5,outlineColor);break;
+					case 0x4d:drawRect(5,5,part.x+5+posx*5,part.y+21+posy*5,DARK_GREY);if(posx<179)posx++; drawRect(5,5,part.x+5+posx*5,part.y+21+posy*5,outlineColor);break;
+					case 0x50:drawRect(5,5,part.x+5+posx*5,part.y+21+posy*5,DARK_GREY);if(posy<104)posy++; drawRect(5,5,part.x+5+posx*5,part.y+21+posy*5,outlineColor);break;
+					case 0x48:drawRect(5,5,part.x+5+posx*5,part.y+21+posy*5,DARK_GREY);if(posy>0)posy--; drawRect(5,5,part.x+5+posx*5,part.y+21+posy*5,outlineColor);break;
+					case 0x39:if(!erase)fillRect(6,6,part.x+5+posx*5,part.y+21+posy*5,DARK_GREY); else fillRect(6,6,part.x+5+posx*5,part.y+21+posy*5,LIGHT_GREY); break;
+					case 0x3C:{
+							drawRect(900,524,part.x+5,part.y+21,LIGHT_GREY);
+	for(int i=0; i<900; i+=5)
+	hLine(part.x+5+i,part.y+21,524,LIGHT_GREY);
+	for(int j=0; j<525; j+=5)
+	vLine(part.x+5,part.y+21+j,900,LIGHT_GREY);
+	waitForKey(0x1c);
+	goto again;
+					}
+				}
+			}
+		}
+		drawRect(5,5,part.x+5+posx*5,part.y+21+posy*5,outlineColor);
+		
+	}while(c!=1);
+	delWin(part);
+	startZ(true);
+}
 void authors()
 {
 	log("[USER] Started program: Authors");
 	drawmain();
+	//gets(0,0);
 	//drawWallpaper();
 	window authors(500,120,40,30,tNames[LANG_RUS][LC_NAME_AUTHORS],"");
 	drawObj(authors);
@@ -577,7 +882,6 @@ void calc()
 							case '-': result=iop1-iop2; break;
 							case 'x': result=iop1*iop2; break;
 							case '/': if(iop2!=0)result=iop1+iop2; else result=0; break;
-
 						}
 						vgaWriteStr(calc.x+5,calc.y+370,itoa(result),MAGENTA,LIGHT_GREY);
 					}
@@ -743,137 +1047,13 @@ void graphicsEdit()
 void gomenu()
 {
 	log("[USER] Started program: Go! Menu");
-	window goMenu(148,200,0,768-208,tNames[LANG_RUS][LC_NAME_GOMENU],"");
-	drawObj(goMenu,false);
-	//drawWallpaper();
-	int selection = 1;
-	//assert(0==1);
-	vgaWriteStr(goMenu.x+5,goMenu.y+21,tNames[LANG_RUS][LC_NAME_OSINFO],MAGENTA,LIGHT_GREY);
-	vgaWriteStr(goMenu.x+5,goMenu.y+29,tNames[LANG_RUS][LC_NAME_AUTHORS],MAGENTA,LIGHT_GREY);
-	vgaWriteStr(goMenu.x+5,goMenu.y+37,tNames[LANG_RUS][LC_NAME_PANIC],MAGENTA,LIGHT_GREY);
-	vgaWriteStr(goMenu.x+5,goMenu.y+45,tNames[LANG_RUS][LC_NAME_REBOOT],MAGENTA,LIGHT_GREY);
-	vgaWriteStr(goMenu.x+5,goMenu.y+53,tNames[LANG_RUS][LC_NAME_EDITOR],MAGENTA,LIGHT_GREY);
-	vgaWriteStr(goMenu.x+5,goMenu.y+61,tNames[LANG_RUS][LC_NAME_GREDIT],MAGENTA,LIGHT_GREY);
-	vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_CLOCK],MAGENTA,LIGHT_GREY);
-	vgaWriteStr(goMenu.x+5,goMenu.y+77,tNames[LANG_RUS][LC_NAME_LVIEW],MAGENTA,LIGHT_GREY);
-	//vgaWriteStr(goMenu.x+5,goMenu.y+77,"CLOCK",MAGENTA,LIGHT_GREY);
-	vgaWriteStr(goMenu.x+5,goMenu.y+21,tNames[LANG_RUS][LC_NAME_OSINFO],LIGHT_GREY,MAGENTA);
-	//printw("test\ntewlines\nmasrkovka\nkostya puknum",goMenu);
-	char c;
-	do
-	{
-		if(inb(0x60)!=c)
-		{
-			c = inb(0x60);
-			if(c==0x48)
-			{
-				if(selection!=1)
-				{
-					selection--;
-					vgaWriteStr(goMenu.x+5,goMenu.y+21,tNames[LANG_RUS][LC_NAME_OSINFO],MAGENTA,LIGHT_GREY);
-					vgaWriteStr(goMenu.x+5,goMenu.y+29,tNames[LANG_RUS][LC_NAME_AUTHORS],MAGENTA,LIGHT_GREY);
-					vgaWriteStr(goMenu.x+5,goMenu.y+37,tNames[LANG_RUS][LC_NAME_PANIC],MAGENTA,LIGHT_GREY);
-					vgaWriteStr(goMenu.x+5,goMenu.y+45,tNames[LANG_RUS][LC_NAME_REBOOT],MAGENTA,LIGHT_GREY);
-					vgaWriteStr(goMenu.x+5,goMenu.y+53,tNames[LANG_RUS][LC_NAME_EDITOR],MAGENTA,LIGHT_GREY);
-					vgaWriteStr(goMenu.x+5,goMenu.y+61,tNames[LANG_RUS][LC_NAME_GREDIT],MAGENTA,LIGHT_GREY);
-					//vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_WPCOLOR],MAGENTA,LIGHT_GREY);
-					vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_CLOCK],MAGENTA,LIGHT_GREY);
-					vgaWriteStr(goMenu.x+5,goMenu.y+77,tNames[LANG_RUS][LC_NAME_LVIEW],MAGENTA,LIGHT_GREY);
-					switch(selection)
-					{
-					case 1: vgaWriteStr(goMenu.x+5,goMenu.y+21,tNames[LANG_RUS][LC_NAME_OSINFO],LIGHT_GREY,MAGENTA); break;
-					case 2: vgaWriteStr(goMenu.x+5,goMenu.y+29,tNames[LANG_RUS][LC_NAME_AUTHORS],LIGHT_GREY,MAGENTA); break;
-					case 3: vgaWriteStr(goMenu.x+5,goMenu.y+37,tNames[LANG_RUS][LC_NAME_PANIC],LIGHT_GREY,MAGENTA); break;
-					case 4: vgaWriteStr(goMenu.x+5,goMenu.y+45,tNames[LANG_RUS][LC_NAME_REBOOT],LIGHT_GREY,MAGENTA); break;
-					case 5: vgaWriteStr(goMenu.x+5,goMenu.y+53,tNames[LANG_RUS][LC_NAME_EDITOR],LIGHT_GREY,MAGENTA); break;
-					case 6: vgaWriteStr(goMenu.x+5,goMenu.y+61,tNames[LANG_RUS][LC_NAME_GREDIT],LIGHT_GREY,MAGENTA); break;
-					//case 7: vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_WPCOLOR],LIGHT_GREY,MAGENTA);break;
-					case 7: vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_CLOCK],LIGHT_GREY,MAGENTA);break;
-					case 8: vgaWriteStr(goMenu.x+5,goMenu.y+77,tNames[LANG_RUS][LC_NAME_LVIEW],LIGHT_GREY,MAGENTA);
-
-					}
-				}
-			}
-			if(c==0x50)
-			{
-				if(selection<8)
-				{
-					selection++;
-					vgaWriteStr(goMenu.x+5,goMenu.y+21,tNames[LANG_RUS][LC_NAME_OSINFO],MAGENTA,LIGHT_GREY);
-					vgaWriteStr(goMenu.x+5,goMenu.y+29,tNames[LANG_RUS][LC_NAME_AUTHORS],MAGENTA,LIGHT_GREY);
-					vgaWriteStr(goMenu.x+5,goMenu.y+37,tNames[LANG_RUS][LC_NAME_PANIC],MAGENTA,LIGHT_GREY);
-					vgaWriteStr(goMenu.x+5,goMenu.y+45,tNames[LANG_RUS][LC_NAME_REBOOT],MAGENTA,LIGHT_GREY);
-					vgaWriteStr(goMenu.x+5,goMenu.y+53,tNames[LANG_RUS][LC_NAME_EDITOR],MAGENTA,LIGHT_GREY);
-					vgaWriteStr(goMenu.x+5,goMenu.y+61,tNames[LANG_RUS][LC_NAME_GREDIT],MAGENTA,LIGHT_GREY);
-					//vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_WPCOLOR],MAGENTA,LIGHT_GREY);
-					vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_CLOCK],MAGENTA,LIGHT_GREY);
-					vgaWriteStr(goMenu.x+5,goMenu.y+77,tNames[LANG_RUS][LC_NAME_LVIEW],MAGENTA,LIGHT_GREY);
-					switch(selection)
-					{
-					case 1: vgaWriteStr(goMenu.x+5,goMenu.y+21,tNames[LANG_RUS][LC_NAME_OSINFO],LIGHT_GREY,MAGENTA); break;
-					case 2: vgaWriteStr(goMenu.x+5,goMenu.y+29,tNames[LANG_RUS][LC_NAME_AUTHORS],LIGHT_GREY,MAGENTA); break;
-					case 3: vgaWriteStr(goMenu.x+5,goMenu.y+37,tNames[LANG_RUS][LC_NAME_PANIC],LIGHT_GREY,MAGENTA); break;
-					case 4: vgaWriteStr(goMenu.x+5,goMenu.y+45,tNames[LANG_RUS][LC_NAME_REBOOT],LIGHT_GREY,MAGENTA); break;
-					case 5: vgaWriteStr(goMenu.x+5,goMenu.y+53,tNames[LANG_RUS][LC_NAME_EDITOR],LIGHT_GREY,MAGENTA); break;
-					case 6: vgaWriteStr(goMenu.x+5,goMenu.y+61,tNames[LANG_RUS][LC_NAME_GREDIT],LIGHT_GREY,MAGENTA); break;
-					//case 7: vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_WPCOLOR],LIGHT_GREY,MAGENTA);break;
-					case 7: vgaWriteStr(goMenu.x+5,goMenu.y+69,tNames[LANG_RUS][LC_NAME_CLOCK],LIGHT_GREY,MAGENTA);break;
-					case 8: vgaWriteStr(goMenu.x+5,goMenu.y+77,tNames[LANG_RUS][LC_NAME_LVIEW],LIGHT_GREY,MAGENTA);
-
-					}
-				}
-			}
-		}
-	}
-	while(c!=28);
-	delWin(goMenu);
-	drawWallpaper();
-	drawDesktop();
-	switch(selection)
-	{
-	case 1:
-	{
-	about(); break;
-	}
-	case 2:
-	{
-	authors(); break;
-	}
-	case 3:
-	{
-	panic("Test panic");
-	}
-	case 4:
-	{
-	reboot(); break;
-	}
-	case 5:
-	{
-	textEdit(); break;
-	}
-	case 6:
-	{
-	graphicsEdit(); break;
-	}
-	case 7:
-	{
-	clock(); break;
-	}
-	case 8:
-	{
-	showLogs(); break;
-	}
-	case 9:
-	{
-	showLogs(); break;
-	}
-	}
+	GoMenu::main();
 }
 void help()
 {
 	log("[USER] Started program: Help");
 	drawmain();
-	window help(639,460,10,30,tNames[LANG_RUS][LC_NAME_HELP],"");
+	window help(1000,500,10,30,tNames[LANG_RUS][LC_NAME_HELP],"");
 	drawObj(help);
 	int i;
 	//vgaWriteStr(help.x+5,help.y+21,"Welcome to OS365 1.0.4\nThe OS nW",MAGENTA,LIGHT_GREY);
@@ -996,7 +1176,7 @@ void help()
 				int oldlang=currLang;
 				currLang=LANG_ENG;
 				int j=0;
-				vgaWriteStr(0,j*8,QUOTATE(DISTNAME)" Authors and Developers Team",LIGHT_CYAN,BLACK);
+				vgaWriteStr(0,j*8,"OS365 Authors and Developers Team",LIGHT_CYAN,BLACK);
 				j++;
 				vgaWriteStr(0,j*8,"Main OS Developer                                                Nikita Ivanov      (catnikita255)",LIGHT_CYAN,BLACK);
 				j++;
@@ -1019,7 +1199,7 @@ void help()
 				vgaWriteStr(0,j*8,"I can't list their names, because it will be so big.",LIGHT_CYAN,BLACK);
 				j++;
 				
-				vgaWriteStr(0,j*8, QUOTATE(DISTNAME) " " QUOTATE(DISTVERSION),LIGHT_CYAN,BLACK);
+				vgaWriteStr(0,j*8,"OS365 1.1.",LIGHT_CYAN,BLACK);
 				j++;
 
 				vgaWriteStr(0,j*8,"By Byte PowerSoft.",LIGHT_CYAN,BLACK);
@@ -1054,6 +1234,8 @@ void help()
 	delWin(help);
 	startZ(true);
 }
+
+// This should be removed and reorganized as text driver
 char translateTable[2][128];
 char desktopTranslate(char c)
 {
@@ -1061,20 +1243,22 @@ char desktopTranslate(char c)
 }
 void setupDeskTranslations()
 {
-	translateTable[LANG_ENG]['a']='a';
-	translateTable[LANG_ENG]['o']='o';
-	translateTable[LANG_ENG]['t']='t';
-	translateTable[LANG_ENG]['g']='g';
-	translateTable[LANG_ENG]['l']='l';
-	translateTable[LANG_ENG]['c']='c';
-
-	translateTable[LANG_RUS]['a']='f';
-	translateTable[LANG_RUS]['o']='b';
-	translateTable[LANG_RUS]['t']='3';
-	translateTable[LANG_RUS]['g']='r';
-	translateTable[LANG_RUS]['l']='z';
-	translateTable[LANG_RUS]['c']='x';
-
+    translateTable[LANG_ENG]['a']='a';
+    translateTable[LANG_ENG]['o']='o';
+    translateTable[LANG_ENG]['t']='t';
+    translateTable[LANG_ENG]['g']='g';
+    translateTable[LANG_ENG]['l']='l';
+    translateTable[LANG_ENG]['c']='c';
+    translateTable[LANG_ENG]['m']='m';
+    translateTable[LANG_ENG]['p']='p';
+    translateTable[LANG_RUS]['a']='f';
+    translateTable[LANG_RUS]['o']='b';
+    translateTable[LANG_RUS]['t']='3';
+    translateTable[LANG_RUS]['g']='r';
+    translateTable[LANG_RUS]['l']='z';
+    translateTable[LANG_RUS]['c']='x';
+    translateTable[LANG_RUS]['m']='c';
+    translateTable[LANG_RUS]['p']='g';
 }
 void startZ(bool startwin)
 {
@@ -1118,18 +1302,19 @@ void startZ(bool startwin)
 			}
 			if(c == charToScancode(desktopTranslate('l')))
 			{
-				if(currLang==LANG_RUS)
-				{
-				setupFonts();
-				currLang=LANG_ENG;
-				scancode="   1234567890-=^^qwertyuiop[]\n^asdfghjkl;'`  zxcvbnm,./^*^   ^^^^^^^^^^^^^^789-456+1230.^^   !@#$%^&*()_+^^QWERTYUIOP{}\n^ASDFGHJKL:'^  ZXCVBNM<>?^*^   ^^^^^^^^^^^^^^&*(_$%^+!@#)>^^";
-				startZ(true);
-				}
-				else {
-				setRusFonts();
-				currLang=LANG_RUS;
-				//scancode="  1234567890-=^jcukeng#\\zhq\n^fwvaproldyW'`  x$smitQbY/^*^   ^^^^^^^^^^^^^^789-456+1230.^^   !@#$%^&*()_+^^JCUKENG#\\ZHQ\n^FWVAPROLDYW:'^    X$SMITQBY?^*^   ^^^^^^^^^^^^^^&*(_$%^+!@#)>^^";
-				startZ(true);
+                if(currLang==LANG_RUS)
+                {
+                    setupFonts();
+                    currLang=LANG_ENG;
+                    scancode="   1234567890-=^^qwertyuiop[]\n^asdfghjkl;'`  zxcvbnm,./^*^   ^^^^^^^^^^^^^^789-456+1230.^^   !@#$%^&*()_+^^QWERTYUIOP{}\n^ASDFGHJKL:'^  ZXCVBNM<>?^*^   ^^^^^^^^^^^^^^&*(_$%^+!@#)>^^";
+                    startZ(true);
+                }
+                else
+                {
+                    setRusFonts();
+                    currLang=LANG_RUS;
+                    //scancode="  1234567890-=^jcukeng#\\zhq\n^fwvaproldyW'`  x$smitQbY/^*^   ^^^^^^^^^^^^^^789-456+1230.^^   !@#$%^&*()_+^^JCUKENG#\\ZHQ\n^FWVAPROLDYW:'^    X$SMITQBY?^*^   ^^^^^^^^^^^^^^&*(_$%^+!@#)>^^";
+                    startZ(true);
 				}
 			}
 			if(c==0x3B)
@@ -1140,6 +1325,19 @@ void startZ(bool startwin)
 			{
 				clock();
 			}
+			if(c==charToScancode(desktopTranslate('m')))
+			{
+				minesweeper();
+			}
+			if(c==charToScancode(desktopTranslate('p')))
+			{
+				pixArt();
+			}
+/*			if(c==0x43)
+			{
+				startCLI();
+			}*/
+
 		}
 	}    
 	while(true);

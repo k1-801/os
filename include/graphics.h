@@ -980,8 +980,8 @@ void vgaPutchar(char c,word x,word y,uint32_t fg,uint32_t bg, bool dnf=false)
 			}
 			else
 			{
-				if(!dnf)
-				VGAPix16(x+j,y+i,bg,640,480);
+				//if(!dnf)
+				//VGAPix16(x+j,y+i,bg,640,480);
 			}
 			j++;
 			count++;
@@ -991,42 +991,21 @@ void vgaPutchar(char c,word x,word y,uint32_t fg,uint32_t bg, bool dnf=false)
 }
 void vgaWriteStr(word x,word y,const char * str,uint32_t fg,uint32_t bg)
 {
-	word oldx=x;
-	for(int i; i != strlen(str); i++)
-	{
-		//switch(str[i])
-		//{
-		//case 'ф': vgaPutchar('ф',x,y,fg,bg);
-		//default:
-		vgaPutchar(str[i],x,y,fg,bg);
-		//}
-		//if(!changed)
-		//{
-			x = x+8;
-		//	continue;
-		//}
-		//else changed=false;
+    for(int i; i != strlen(str); i++)
+    {
+        vgaPutchar(str[i],x,y,fg,bg);
+        x = x+8;
 	}
 }
 void vgaWriteStr(word x,word y,const char * str,uint32_t fg,uint32_t bg, bool dnf)
 {
-	word oldx=x;
-	for(int i; i != strlen(str); i++)
-	{
-		//switch(str[i])
-		//{
-		//case 'ф': vgaPutchar('ф',x,y,fg,bg);
-		//default:
-		vgaPutchar(str[i],x,y,fg,bg,true);
-		//}
-		//if(!changed)
-		//{
-			x = x+8;
-		//	continue;
-		//}
-		//else changed=false;
-	}
+    for(int i; i != strlen(str); i++)
+    {
+        vgaPutchar(str[i],x,y,fg,bg,true);
+        x = x+8;
+    }
 }
+
 /*void vgaPutchar(wchar_t c,word x,word y,byte fg,byte bg)
 {
 	int i,j;
