@@ -18,4 +18,8 @@ class Window
         Window(/*Hcl::String*/ const char*, uint64_t, uint64_t, uint64_t, uint64_t);
 };
 
+bool drawObj(Window* target, uint32_t color, uint32_t captColor);
+bool drawObj(Window* target,bool noBtmCrn);
+void delWin(Window* wnd);
+
 #endif // WINDOW_HPP
