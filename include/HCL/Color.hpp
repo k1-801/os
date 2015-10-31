@@ -25,11 +25,11 @@ namespace Hcl
             operator uint32_t();
             Color& operator *= (long double);
             Color& operator += (const Color&);
-
-            friend Color  operator *  (const Color&, long double);
-            friend Color  operator *  (long double, const Color&);
-            friend Color  operator +  (const Color&, const Color&);
     }
+
+    Color  operator *  (const Color&, long double);
+    Color  operator *  (long double, const Color&);
+    Color  operator +  (const Color&, const Color&);
 }
 
 #endif // HCL_COLOR_HPP
