@@ -1,16 +1,18 @@
 #include "../include/Allocator.hpp"
 
 Allocator* allocator;
+extern uint64_t kend;
 
 Allocator::Allocator()
 {
-    _kernelEnd = kend;
+    uint64_t t = (uint64_t)(&kend);
+    _kernelEnd = (void*)(t);
     //_buildMap();
-    _last = _kernelEnd - (_kernelEnd % 0x100000) + 0x100000;
+    _last = (void*)(t - (t % 0x100000) + 0x100000);
 }
 
-void* Allocator::Allocate(uint64_t size)
+void* Allocator::allocate(uint64_t size)
 {
-    _last += 0x1000;
-    return ;
+    _last = (char*)(_last) + 0x1000;
+    return _last;
 }

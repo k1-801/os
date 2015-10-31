@@ -6,6 +6,8 @@
 #include "scrio.h"
 #include "locale.h"
 
+#include "../include/Static.hpp"
+
 uint32_t BGCOLOR=CYAN;
 
 void printw(const char * msg, Window wnd);

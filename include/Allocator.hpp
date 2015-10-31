@@ -21,6 +21,7 @@ class Allocator
         //PageTable* pageTable;
 
     public:
+        Allocator();
         void*   allocate(uint64_t);        // malloc
         void* reallocate(void*, uint64_t); // realloc
         void*       copy(void*, uint64_t); // memcpy

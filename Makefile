@@ -25,8 +25,16 @@ SOURCES=gdt.asm \
 	boot.s \
 	paging.s \
 	kernel.cpp \
+	\
+	Allocator.cpp \
+	FbGraphics.cpp \
 	GoMenu.cpp \
+	Static.cpp \
+	Syslog.cpp \
+	Window.cpp \
+	\
 	HCL/Char.cpp \
+	HCL/Color.cpp \
 	HCL/String.cpp
 
 #end

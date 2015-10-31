@@ -52,11 +52,11 @@ static inline uint32_t inl(uint16_t port)
 	asm volatile ( "inb %1, %0" : "=a"(ret) : "Nd"(port) );
 	return ret;
 }
-void insl(unsigned short port, unsigned int buffer, unsigned long count)
+inline void insl(unsigned short port, unsigned int buffer, unsigned long count)
 {
 asm("cld; rep; insl" :: "D" (buffer), "d" (port), "c" (count));
 }
-int getch()
+inline int getch()
 {
 	char c = 0;
 	do
@@ -72,7 +72,7 @@ int getch()
 	}
 	while(c!=1);
 }
-void init_pics(int pic1, int pic2)
+inline void init_pics(int pic1, int pic2)
 {
 	outb(PIC1, ICW1);
 	outb(PIC2, ICW1);
@@ -84,7 +84,7 @@ void init_pics(int pic1, int pic2)
 	outb(PIC2 + 1, ICW4);
 	outb(PIC1 + 1, 0xFF);
 }
-void update_cursor(int row, int col)
+inline void update_cursor(int row, int col)
 {
 	unsigned short position=(row*80) + col;
 	outb(0x3D4,0x0F);

@@ -62,8 +62,8 @@ void kernel_main(struct mboot_info_struct *mbinfo)
 	log("[INFO] Setting VBE graphics mode...");
 	//sleep(18);
 	//setGraphicsMode();
-	vbe_info_t* vbeInfo=mbinfo->vbe_mode;
-	framebuffer        =mbinfo->framebuffer_addr;
+	vbe_info_t* vbeInfo=(vbe_info_t*)(uint32_t)mbinfo->vbe_mode;
+	framebuffer        =(uint8_t*)(mbinfo->framebuffer_addr);
 	fbpitch            =mbinfo->framebuffer_pitch;
 	fbbpp              =mbinfo->framebuffer_bpp;
 

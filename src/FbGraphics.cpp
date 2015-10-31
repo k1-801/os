@@ -1,10 +1,12 @@
-#ifndef GRAPHICS_H
-#define GRAPHICS_H
+#include "../include/FbGraphics.hpp"
 
-#include "io.h"
-#include "fonts.h"
-#include "klog.h"
-#include "mboot.h"
+#include "../include/Static.hpp"
+#include "../include/Syslog.hpp"
+
+#include "../include/io.h"
+#include "../include/fonts.h"
+#include "../include/mboot.h"
+
 size_t vgaCol = 0;
 size_t vgaRow = 0;
 const size_t scrH = 40;
@@ -13,182 +15,9 @@ word x = 0;
 word y = 0;
 bool textMode = false;
 bool settedMode=false;
-//constants
 bool mSet;
-#define min(a,b) (a<b) ? a : b
-#define VGA_CRT 0              //CRT set
-#define VGA_ACT 1              //attribute controller set
-#define VGA_GEN 2              //general registers set
-#define VGA_SEQ 3              //sequencer set
-#define VGA_GCT 4              //graphics controller set
-#define VGA_OLD 5              //old pallete enable
-
-#define VGA__GEN__MIS 0        //miscellaneous in the generals set
-#define VGA__GEN__ST1 1        //status 1 in the generals set, readonly
-#define VGA__OLD__ENA 0        //old pallete enable index
-
-#define VGA__GEN_MISC_R 0x3cc  //general miscellaneous, read
-#define VGA__GEN_MISC_W 0x3c2  //general miscellaneous, write
-#define VGA__GEN_STATUS1 0x3da //general status 1
-#define VGA__SEQ_ADDR 0x3c4    //sequencer, address
-#define VGA__SEQ_DATA 0x3c5    //sequencer, data
-#define VGA__SEQ__RST 0        //sequencer, reset
-#define VGA__SEQ__CLK 1        //sequencer, clock mode
-#define VGA__SEQ__MAP 2        //sequencer, map selection
-#define VGA__SEQ__FNT 3        //sequencer, font selection
-#define VGA__SEQ__MEM 4        //sequencer, memory mode
-#define VGA__CRT_ADDR 0x3d4    //CRT, address
-#define VGA__CRT_DATA 0x3d5    //CRT, data
-#define VGA__CRT__HTO 0        //CRT, horizontal total
-#define VGA__CRT__HDE 1        //CRT, horizontal display-enable end
-#define VGA__CRT__HBS 2        //CRT, horizontal blanking start
-#define VGA__CRT__HBE 3        //CRT, horizontal blanking end
-#define VGA__CRT__HRS 4        //CRT, horizontal retrace start
-#define VGA__CRT__HRE 5        //CRT, horizontal retrace end
-#define VGA__CRT__VTO 6        //CRT, vertical total
-#define VGA__CRT__MSB 7        //CRT, most significant bits
-#define VGA__CRT__PRS 8        //CRT, preset scanline
-#define VGA__CRT__MSL 9        //CRT, maximum scanline
-#define VGA__CRT__CSL 10       //CRT, cursor start
-#define VGA__CRT__CEL 11       //CRT, cursor end
-#define VGA__CRT__SAH 12       //CRT, start address (high)
-#define VGA__CRT__SAL 13       //CRT, start address (low)
-#define VGA__CRT__CLH 14       //CRT, cursor location (high)
-#define VGA__CRT__CLL 15       //CRT, cursor location (low)
-#define VGA__CRT__VRS 16       //CRT, vertical retrace start
-#define VGA__CRT__VRE 17       //CRT, vertical retrace end
-#define VGA__CRT__VDE 18       //CRT, vertical display-enable end
-#define VGA__CRT__OFF 19       //CRT, offset (logical line width)
-#define VGA__CRT__ULL 20       //CRT, underline location
-#define VGA__CRT__VBS 21       //CRT, vertical blanking start
-#define VGA__CRT__VBE 22       //CRT, vertical blanking end
-#define VGA__CRT__MOD 23       //CRT, mode
-#define VGA__CRT__SSL 24       //CRT, line compare (split screen line)
-#define VGA__GCT_ADDR 0x3ce    //graphics controller, address
-#define VGA__GCT_DATA 0x3cf    //graphics controller, data
-#define VGA__GCT__WRV 0        //graphics controller, write value
-#define VGA__GCT__WRS 1        //graphics controller, write selection
-#define VGA__GCT__COC 2        //graphics controller, color compare
-#define VGA__GCT__DRO 3        //graphics controller, data rotate
-#define VGA__GCT__RDM 4        //graphics controller, read map
-#define VGA__GCT__GMO 5        //graphics controller, graphics mode
-#define VGA__GCT__MIS 6        //graphics controller, miscelaneous
-#define VGA__GCT__CSE 7        //graphics controller, color selection
-#define VGA__GCT__BIT 8        //graphics controller, bit mask
-#define VGA__ACT_ADDA 0x3c0    //attribute controller, address and data
-#define VGA__ACT_READ 0x3c1    //attribute controller, read
-#define VGA__ACT__ATB 16       //attribute controller, attributes
-#define VGA__ACT__BOR 17       //attribute controller, border color
-#define VGA__ACT__PEN 18       //attribute controller, plane enable
-#define VGA__ACT__OFF 19       //attribute controller, offset
-#define VGA__ACT__CSE 20       //attribute controller, color selection
-#define VGA__DAC_ADDR_R 0x3c7  //pallete, read address
-#define VGA__DAC_ADDR_W 0x3c8  //pallete, write address
-#define VGA__DAC_DATA 0x3c9    //pallete, data
-#define VGA__DAC_MASK 0x3c6    //pallete, bit mask
 
 vbe_info_t vbeMode;
-
-const char *roundLT = "\
-0000022222222222\
-0002222222222222\
-0022111111111111\
-0221111111111111\
-0221111111111111\
-2211111111111111\
-2211111111111111\
-2211111111111111\
-2211111111111111\
-2211111111111111\
-2211111111111111\
-2211111111111111\
-2211111111111111\
-2211111111111111\
-2211111111111111\
-2211111111111111\
-";
-const char *roundRT = "\
-2222222222200000\
-2222222222222000\
-1111111111112200\
-1111111111111220\
-1111111111111220\
-1111111111111122\
-1111111111111122\
-1111111111111122\
-1111111111111122\
-1111111111111122\
-1111111111111122\
-1111111111111122\
-1111111111111122\
-1111111111111122\
-1111111111111122\
-1111111111111122\
-";
-const char *roundLB = "\
-2211111111111111\
-2211111111111111\
-2211111111111111\
-2211111111111111\
-2211111111111111\
-2211111111111111\
-2211111111111111\
-2211111111111111\
-2211111111111111\
-2211111111111111\
-2211111111111111\
-0221111111111111\
-0221111111111111\
-0022111111111111\
-0002222222222222\
-0000022222222222\
-";
-const char *roundRB = "\
-1111111111111122\
-1111111111111122\
-1111111111111122\
-1111111111111122\
-1111111111111122\
-1111111111111122\
-1111111111111122\
-1111111111111122\
-1111111111111122\
-1111111111111122\
-1111111111111122\
-1111111111111220\
-1111111111111220\
-1111111111112200\
-2222222222222000\
-2222222222200000\
-";
-
-//VGA register structure
-byte PAL16[48]=
-{
-    0x00,0x00,0x00,0x00,0x00,0x80,0x00,0x80,0x00,0x00,0x80,0x80,0x80,0x00,0x00,
-    0x80,0x00,0x80,0x80,0x80,0x00,0xc0,0xc0,0xc0,0x80,0x80,0x80,0x00,0x00,0xff,
-    0x00,0xff,0x00,0x00,0xff,0xff,0xff,0x00,0x00,0xff,0x00,0xff,0xff,0xff,0x00,
-    0xff,0xff,0xff
-};
-/*
-byte PAL16[48]=
-{
-0x00,0x00,0x00,0x00,0x00,0x80,0x00,0x80,0x00,0x00,0x80,0x80,0x80,0x00,0x00,
-0x80,0x00,0x80,0x80,0x80,0x00,0xc0,0xc0,0xc0,0x80,0x80,0x80,0x00,0x00,0xff,
-0x00,0xff,0x00,0x00,0xff,0xff,0xff,0x00,0x00,0xff,0x00,0xff,0xff,0xff,0x00,
-0xff,0xff,0xff
-};
-*/
-
-
-//tables for video modes
-//SEQ_CLK,ACT_OFF,CRT_MOD
-byte tbl_mod_txt8p[3]={0x01,0x00,0x00};
-byte tbl_mod_txt9p[3]={0x00,0x08,0x00};
-byte tbl_mod_gra16c[3]={0x01,0x00,0x40};
-byte tbl_mod_gra256c[3]={0x01,0x00,0x40};
-
-//functions
 
 //writes a value in a VGA register
 //set is 0 for CRT controller, 1 for attribute controller, 2 for
@@ -388,7 +217,7 @@ void setfontplane(void)
 //pal=poworder to the first pallete color to be used
 //first=first color to modify
 //num=number of colors to modify
-void VGASetPal(byte*pal,byte first,word num)
+void VGASetPal(uint8_t* pal, uint8_t first, uint32_t num)
 {
    if((num+first)>256)num=256-first;
    if(!num)return;
@@ -893,7 +722,7 @@ inline void VGAPix16(word x,word y,uint32_t color,word w,word h)
     framebuffer[where + 2] = (color >> 16);  // RED
 }
 bool changed=false;
-void vgaPutchar(char c,word x,word y,uint32_t fg,uint32_t bg, bool dnf=false)
+void vgaPutchar(char c,word x,word y,uint32_t fg,uint32_t bg, bool dnf)
 {
 	int i,j;
 	i = 0;
@@ -941,10 +770,10 @@ void vgaWriteStr(uint64_t x, uint64_t y, const char * str, uint32_t fg, uint32_t
 }
 void vgaWriteStr(word x,word y,const char * str,uint32_t fg,uint32_t bg, bool dnf)
 {
-    for(int i; i != strlen(str); i++)
+    int i;
+    for(i = 0; str[i]; ++i)
     {
-        vgaPutchar(str[i],x,y,fg,bg,true);
-        x = x+8;
+        vgaPutchar(str[i], x + i * 8, y, fg, bg, true);
     }
 }
 
@@ -1025,7 +854,7 @@ void fillRect(word w,word h, word x_, word y_, uint32_t color)
 		i++;
 	}
 }
-inline void drawGradient(int x, int y, int x2, int y2, uint32_t c1, uint32_t c2,bool rev=false)
+inline void drawGradient(int x, int y, int x2, int y2, uint32_t c1, uint32_t c2,bool rev)
 {
 	if(!rev)
 	for(int i=0; (i < x2-x)&&((c1+i)<c2); i++)
@@ -1038,7 +867,7 @@ inline void drawGradient(int x, int y, int x2, int y2, uint32_t c1, uint32_t c2,
 		hLine(x+i,y,y2-y,c1+i);
 	}
 }
-void drawBitmap(const char* bm, word x,word y,word width,word height,uint32_t bg,uint32_t c1,uint32_t c2,uint32_t c3,uint32_t c4,bool dnf=false)
+void drawBitmap(const char* bm, word x,word y,word width,word height,uint32_t bg,uint32_t c1,uint32_t c2,uint32_t c3,uint32_t c4,bool dnf)
 {
 	int i,j;
 	//int sc1=0,sc2=0;
@@ -1157,7 +986,7 @@ void setGraphicsMode()
     //VGASetFont(FONT,fonteight,0,256);//this only in text mode to set the font
     //VGACursor(0);//this only in text mode in case you want to disable the cursor
     if(!mSet)log("[INFO] Setting palette...");
-    VGASetPal(PAL16,0,16);//set the pallete
+    VGASetPal(PAL16, 0, 16);//set the pallete
     if(!mSet)log("done.");
     mSet=true;
 }
@@ -1166,4 +995,3 @@ void textModeOn()
 	setGraphicsMode();
 	textMode = true;
 }
-#endif

@@ -7,6 +7,10 @@
 // C
 #include <stdint.h>
 
+// I have no idea where they are, but i'm sure they mut be removed
+void drawWallpaper();
+void drawDesktop();
+
 Hcl::Vector<GoMenuEntry> GoMenu::_c;
 
 void GoMenu::main()
@@ -21,7 +25,7 @@ void GoMenu::main()
     bool run = true;
     while(run)
     {
-        for(i = 0; i < _c.size(); ++i)
+        for(i = 0; i < _c.getSize(); ++i)
         {
             if(i == s)
                 vgaWriteStr(goMenu.x+5, goMenu.y + 21 + i * 8, _c[i].name, MAGENTA, LIGHT_GREY);
@@ -36,7 +40,7 @@ void GoMenu::main()
                     --s;
                 break;
             case 0x50:
-                if(s < _c.size() - 1)
+                if(s < _c.getSize() - 1)
                     ++s;
                 break;
             case 0x28:

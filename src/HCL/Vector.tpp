@@ -26,12 +26,12 @@ namespace Hcl
     {
         if(!data)
         {
-            data = allocator->allocate(sizeof(VectorData<T>));
+            data = (VectorData<T>*)(allocator->allocate(sizeof(VectorData<T>)));
         }
         if(data->refs > 1)
         {
             --(data->refs);
-            data = allocator->copy(data, sizeof(VectorData<T>));
+            data = (VectorData<T>*)(allocator->copy(data, sizeof(VectorData<T>)));
             data->refs = 1;
         };
     }

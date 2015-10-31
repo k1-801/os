@@ -6,12 +6,13 @@
 // HCL
 #include "HCL/String.hpp"
 #include "HCL/Vector.hpp"
+#include "io.h"
 
 class GoMenuEntry
 {
     public:
         uint64_t uid;
-        Hcl::String name;
+        /*Hcl::String*/const char* name;
         int64_t (*callback)(void);
 };
 
