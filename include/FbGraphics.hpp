@@ -171,7 +171,7 @@ void drawRect(uint64_t, uint64_t, uint64_t, uint64_t, uint32_t color);
 void fillRect(uint64_t, uint64_t, uint64_t, uint64_t, uint32_t color);
 
 // DEPRECATED
-void drawGradient(uint64_t, uint64_t, uint64_t, int, uint32_t, uint32_t, bool=false);
+void drawGradient(uint64_t, uint64_t, uint64_t, uint64_t, uint32_t, uint32_t, bool=false);
 void drawBitmap(const char*, uint64_t, uint64_t, uint64_t, uint64_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, bool=false);
 void drawBitmap(const char*, uint64_t, uint64_t, uint64_t, uint64_t);
 void setGraphicsMode();

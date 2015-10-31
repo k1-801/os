@@ -37,6 +37,12 @@ namespace Hcl
     }
     
     template <class T>
+    uint64_t Vector<T>::getSize() const
+    {
+        return (data ? data->getSize() : 0);
+    }
+    
+    template <class T>
     void Vector<T>::pushBack(const T& e)
     {
         _cow();
@@ -62,6 +68,11 @@ namespace Hcl
     }
     template <class T>
     T& Vector<T>::at(uint64_t n)
+    {
+        return data->at(n);
+    }
+    template <class T>
+    T& Vector<T>::operator [] (uint64_t n)
     {
         return data->at(n);
     }

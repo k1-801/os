@@ -716,7 +716,7 @@ inline void VGAPix16(uint64_t x, uint64_t y, uint32_t color)
     framebuffer[where + 2] = (color >> 16);  // RED
 }
 bool changed=false;
-void vgaPutchar(char c,word x,word y,uint32_t fg,uint32_t bg, bool dnf)
+void vgaPutchar(char c, uint64_t x, uint64_t y,uint32_t fg, uint32_t bg, bool dnf)
 {
 	int i,j;
 	i = 0;
@@ -776,7 +776,7 @@ uint32_t colorMix(uint32_t c1, uint32_t c2)
 	return c1+c2-(16777216-min(c1,c2));
 }
 
-void hLine(word x1,word y1,word length,uint32_t color)
+void hLine(uint64_t x1, uint64_t y1, uint64_t length, uint32_t color)
 {
 	word i;
 	while(i != length)
@@ -786,37 +786,34 @@ void hLine(word x1,word y1,word length,uint32_t color)
 		VGAPix16(x1,y1,color);
 	}
 }
-void drawLine(word x1,word y1,word x2,word y2,uint32_t color)
+void drawLine(uint64_t x1, uint64_t y1, uint64_t x2, uint64_t y2, uint32_t color)
 {
-	word i=0,j=0;
-	while(i<(y2-y1))
-	{
-		j=0;
-		while(j<(x2-x1)/(y2-y1))
-		{
-			VGAPix16(x1+j*i,y1+i,color);
-			j++;
-		}
-		i++;
-	}
+    uint64_t i, j;
+    for(i = 0; i < (y2 - y1); ++i)
+    {
+        for(j = 0; j < (x2 - x1) / (y2 - y1); ++j)
+        {
+            VGAPix16(x1+j*i,y1+i,color);
+        }
+    }
 }
-void vLine(word x1,word y1,word length,uint32_t color)
+void vLine(uint64_t x1, uint64_t y1, uint64_t length, uint32_t color)
 {
-	int i;
-	while(i != length)
-	{
-		i++;
-		VGAPix16(x1+i,y1,color);
-	}
+    uint64_t i;
+    for(i = 0; i < length; ++i)
+    {
+        VGAPix16(x1+i,y1,color);
+    }
 }
 
-void drawRect(word w,word h, word x_, word y_, uint32_t color)
+void drawRect(uint64_t w, uint64_t h, uint64_t x_, uint64_t y_, uint32_t color)
 {
 	vLine(x_,y_,w,color);
 	hLine(x_,y_,h,color);
 	vLine(x_,y_+h,w,color);
 	hLine(x_,y_+h,h,color);
 }
+
 void fillRect(uint64_t w, uint64_t h, uint64_t x_, uint64_t y_, uint32_t color)
 {
 	word w_=w, h_=h, x=x_, y=y_, i=0;
@@ -826,6 +823,7 @@ void fillRect(uint64_t w, uint64_t h, uint64_t x_, uint64_t y_, uint32_t color)
 		i++;
 	}
 }
+
 inline void drawGradient(uint64_t x, uint64_t y, uint64_t x2, uint64_t y2, uint32_t c1, uint32_t c2, bool rev)
 {
     if(!rev)
@@ -843,6 +841,7 @@ inline void drawGradient(uint64_t x, uint64_t y, uint64_t x2, uint64_t y2, uint3
         }
     }
 }
+
 void drawBitmap(const char* bm, uint64_t x, uint64_t y, uint64_t width, uint64_t height, uint32_t bg ,uint32_t c1, uint32_t c2, uint32_t c3, uint32_t c4, bool dnf)
 {
     uint64_t i, j, count = 0;

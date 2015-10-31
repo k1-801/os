@@ -31,8 +31,8 @@ namespace Hcl
             uint64_t getAlloc() const;
             bool isEmpty() const;
 
-            void realloc();
-            void resize();
+            void realloc(uint64_t);
+            void resize (uint64_t);
 
             void pushBack(const T&);
             void popBack();

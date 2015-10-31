@@ -1,7 +1,4 @@
-#pragma once
-
-#ifndef HCL_VECTORDATA_TPP
-#define HCL_VECTORDATA_TPP
+#include "../../include/Allocator.hpp"
 
 namespace Hcl
 {
@@ -21,6 +18,42 @@ namespace Hcl
     bool VectorData<T>::isEmpty() const
     {
         return _end == _begin;
+    }
+    
+    template <class T>
+    void VectorData<T>::realloc(uint64_t n)
+    {
+        if(n > _end - _begin)
+            allocator->reallocate(_begin, n * sizeof(T));
+    }
+    
+    template <class T>
+    void VectorData<T>::resize(uint64_t n)
+    {
+        uint64_t c = _end - _begin, i;
+        if(c == n)
+            return;
+        if(c < n)
+        {
+            realloc(n);
+            for(i = c; i < n; ++i)
+                _begin[i].T();
+        }
+        else
+            for(i = c; i >= n; --i)
+                _begin[i].~T();
+        _end = _begin + n;
+    }
+    
+    template <class T>
+    void VectorData<T>::pushBack(const T& e)
+    {
+        if(_end == _endall)
+            realloc((_end - _begin) * 2);
+        /// Have to choose one
+        *(_end) = e;
+        //_end->T(e);
+        ++_end;
     }
     
     template <class T>
@@ -73,5 +106,3 @@ namespace Hcl
         return false;
     }
 }
-
-#endif // HCL_VECTORDATA_TPP
