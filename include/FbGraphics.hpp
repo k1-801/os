@@ -6,7 +6,6 @@
 // All of the contents is DEPRECATED
 
 #include "HCL/Std.hpp"
-#include "Window.hpp"
 #include "mboot.h"
 
 //constants
@@ -103,34 +102,20 @@ typedef enum
     WHITE         = 0xFFFFFF,
 } colors;
 
-// from io.h - remove
-typedef unsigned char byte;
-typedef unsigned short word;
-typedef unsigned int dword;
-typedef unsigned long long int qword;
-
 // from there - remove
 typedef struct
 {
-    byte
-    gen_mis,
-    seq[5],
-    crt[25],
-    gct[9],
-    act[5];
+    uint8_t gen_mis;
+    uint8_t seq[5];
+    uint8_t crt[25];
+    uint8_t gct[9];
+    uint8_t act[5];
 } vgaregs_t;
 
-extern size_t vgaCol;
-extern size_t vgaRow;
-extern const size_t scrH;
-extern const size_t scrW;
-extern word x;
-extern word y;
 extern bool textMode;
 extern bool settedMode;
 extern bool mSet;
 extern const char* bitmap;
-extern const char* a;
 extern vbe_info_t vbeMode;
 
 extern uint8_t *framebuffer;
@@ -148,38 +133,37 @@ void vgachangemode(vgaregs_t*);
 void settextplane();
 void setfontplane();
 
-void VGASetPal(uint8_t*, uint8_t, uint32_t);
-void VGAGetPal(uint8_t*, uint8_t, uint32_t);
-void VGAGotoXY(uint8_t, uint8_t, uint8_t);
-void VGAWhereXY(byte*x,byte*y,byte w);
-void VGASetCursor(byte y,byte h);
-void VGAGetCursor(byte*y,byte*h);
-void VGACursor(byte e);
-void VGASetFont(byte*fnt,byte ch,word first,word num);
-void VGAGetFont(byte*fnt,byte ch,word first,word num);
-void VGAWaitVBL(void);
-byte VGAMode(byte m,word w,word h,byte o);
-void VGAPix16(word x,word y,uint32_t color,word w,word h);
+void    VGASetPal (uint8_t*, uint8_t , uint32_t);
+void    VGAGetPal (uint8_t*, uint8_t , uint32_t);
+void    VGAGotoXY (uint8_t , uint8_t , uint8_t);
+void    VGAWhereXY(uint8_t*, uint8_t*, uint8_t);
+void    VGASetCursor(uint8_t , uint8_t);
+void    VGAGetCursor(uint8_t*, uint8_t*);
+void    VGACursor(uint8_t);
+void    VGASetFont(uint8_t*, uint8_t, uint64_t, uint64_t);
+void    VGAGetFont(uint8_t*, uint8_t, uint64_t, uint64_t);
+void    VGAWaitVBL(void);
+uint8_t VGAMode(uint8_t, uint64_t, uint64_t, uint8_t);
 
-void vgaPutchar(char c,word x,word y,uint32_t fg,uint32_t bg, bool dnf=false);
-void vgaWriteStr(uint64_t x, uint64_t y, const char * str, uint32_t fg, uint32_t bg);
-void vgaWriteStr(word x,word y,const char * str,uint32_t fg,uint32_t bg, bool dnf);
+void    VGAPix16(uint64_t, uint64_t, uint32_t);
 
-void putpix(uint32_t color);
+void vgaPutchar(char, uint64_t, uint64_t, uint32_t, uint32_t, bool=false);
+void vgaWriteStr(uint64_t, uint64_t, const char*, uint32_t, uint32_t);
+void vgaWriteStr(uint64_t, uint64_t, const char*, uint32_t, uint32_t, bool);
+
 uint32_t colorMix(uint32_t c1, uint32_t c2);
-void hLine(word x1,word y1,word length,uint32_t color);
-void drawLine(word x1,word y1,word x2,word y2,uint32_t color);
-void vLine(word x1,word y1,word length,uint32_t color);
-void drawRect(word w,word h, word x_, word y_, uint32_t color);
-void fillRect(word w,word h, word x_, word y_, uint32_t color);
-void drawGradient(int x, int y, int x2, int y2, uint32_t c1, uint32_t c2,bool rev=false);
-void drawBitmap(const char* bm, word x,word y,word width,word height,uint32_t bg,uint32_t c1,uint32_t c2,uint32_t c3,uint32_t c4,bool dnf=false);
-void drawBitmap(const char* bm,word x,word y,word width,word height);
+
+void drawLine(uint64_t, uint64_t, uint64_t, uint64_t, uint32_t color);
+void hLine   (uint64_t, uint64_t, uint64_t,           uint32_t color);
+void vLine   (uint64_t, uint64_t, uint64_t,           uint32_t color);
+void drawRect(uint64_t, uint64_t, uint64_t, uint64_t, uint32_t color);
+void fillRect(uint64_t, uint64_t, uint64_t, uint64_t, uint32_t color);
+
+// DEPRECATED
+void drawGradient(uint64_t, uint64_t, uint64_t, int, uint32_t, uint32_t, bool=false);
+void drawBitmap(const char*, uint64_t, uint64_t, uint64_t, uint64_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, bool=false);
+void drawBitmap(const char*, uint64_t, uint64_t, uint64_t, uint64_t);
 void setGraphicsMode();
 void textModeOn();
-
-void drawObj(Window*, uint32_t = LIGHT_GREY, uint32_t=LIGHT_BLUE);
-void drawObj(Window*, bool);
-void delWin(Window*);
 
 #endif // FBGRAPHICS_HPP

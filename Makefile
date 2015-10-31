@@ -5,7 +5,7 @@ SHELL=/bin/bash
 ## Edit as for your project
 
 DISTNAME=Smidgen
-VERSION=0.3.0
+VERSION=0.4.0
 
 CPREFIX=~/opt/cross/bin/i686-elf-
 SRCDIR=./src/

@@ -22,7 +22,7 @@ void drawmain()
 	vgaWriteStr(0,759,tNames[LANG_RUS][LC_NAME_MAINBOTTOM],WHITE,LIGHT_BLUE);
 
 }
-void printw(const char * msg, Window wnd)
+/*void printw(const char * msg, Window wnd)
 {
 	int line_n = 0;
 	int oldx=wnd.x+5;
@@ -40,7 +40,7 @@ void printw(const char * msg, Window wnd)
 			x_=x;
 		}
 	}
-}
+}*/
 void z_init()
 {
 	

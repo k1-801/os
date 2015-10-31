@@ -7,12 +7,6 @@
 #include "../include/fonts.h"
 #include "../include/mboot.h"
 
-size_t vgaCol = 0;
-size_t vgaRow = 0;
-const size_t scrH = 40;
-const size_t scrW = 80;
-word x = 0;
-word y = 0;
 bool textMode = false;
 bool settedMode=false;
 bool mSet;
@@ -714,7 +708,7 @@ uint8_t *vram=(uint8_t*)0xA0000;
    return;*/
   uint32_t fbpitch;
   uint8_t fbbpp;
-inline void VGAPix16(word x,word y,uint32_t color,word w,word h)
+inline void VGAPix16(uint64_t x, uint64_t y, uint32_t color)
 {
 	unsigned where = x*(fbbpp/8) + y*fbpitch;
 	framebuffer[where] = color;              // BLUE
@@ -747,12 +741,12 @@ void vgaPutchar(char c,word x,word y,uint32_t fg,uint32_t bg, bool dnf)
 		{
 			if(font[(word)c][count] == '1')
 			{
-				VGAPix16(x+j,y+i,fg,640,480);
+				VGAPix16(x+j,y+i,fg);
 			}
 			else
 			{
 				//if(!dnf)
-				//VGAPix16(x+j,y+i,bg,640,480);
+				//VGAPix16(x+j,y+i,bg);
 			}
 			j++;
 			count++;
@@ -777,15 +771,6 @@ void vgaWriteStr(word x,word y,const char * str,uint32_t fg,uint32_t bg, bool dn
     }
 }
 
-void putpix(uint32_t color)
-{
-	VGAPix16(x,y,0xf0,640,480);
-	if(++x == 640)
-	{
-		y++;
-		x = 0;
-	}
-}
 uint32_t colorMix(uint32_t c1, uint32_t c2)
 {
 	return c1+c2-(16777216-min(c1,c2));
@@ -807,7 +792,7 @@ void hLine(word x1,word y1,word length,uint32_t color)
 	{
 		i++;
 		y1++;
-		VGAPix16(x1,y1,color,640,480);
+		VGAPix16(x1,y1,color);
 	}
 }
 void drawLine(word x1,word y1,word x2,word y2,uint32_t color)
@@ -818,7 +803,7 @@ void drawLine(word x1,word y1,word x2,word y2,uint32_t color)
 		j=0;
 		while(j<(x2-x1)/(y2-y1))
 		{
-			VGAPix16(x1+j*i,y1+i,color,640,480);
+			VGAPix16(x1+j*i,y1+i,color);
 			j++;
 		}
 		i++;
@@ -830,7 +815,7 @@ void vLine(word x1,word y1,word length,uint32_t color)
 	while(i != length)
 	{
 		i++;
-		VGAPix16(x1+i,y1,color,640,480);
+		VGAPix16(x1+i,y1,color);
 	}
 }
 const char* bitmap = "10101010\
@@ -889,20 +874,20 @@ void drawBitmap(const char* bm, word x,word y,word width,word height,uint32_t bg
 			{
 			if(!dnf)
 			{
-			VGAPix16(x+j,y+i,bg,640,480);
+			VGAPix16(x+j,y+i,bg);
 			}
 		}
 			else if(bm[count] == '1')
-			VGAPix16(x+j,y+i,c1,640,480);
+			VGAPix16(x+j,y+i,c1);
 			else if(bm[count] == '2')
 
-			VGAPix16(x+j,y+i,c2,640,480);
+			VGAPix16(x+j,y+i,c2);
 			else if(bm[count] == '3')
 
-			VGAPix16(x+j,y+i,c3,640,480);
+			VGAPix16(x+j,y+i,c3);
 			else if(bm[count] == '4')
 
-			VGAPix16(x+j,y+i,c4,640,480);
+			VGAPix16(x+j,y+i,c4);
 			j++;
 			count++;
 			//sc2++;
@@ -913,7 +898,9 @@ void drawBitmap(const char* bm, word x,word y,word width,word height,uint32_t bg
 	//sc1++;
 	//}
 }
-void drawBitmap(const char* bm,word x,word y,word width,word height)
+
+// DEPRECATED
+void drawBitmap(const char* bm, uint64_t x, uint64_t y, uint64_t width, uint64_t height)
 {
 	int i,j;
 	i = 0;
