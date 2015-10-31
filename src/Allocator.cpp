@@ -16,3 +16,19 @@ void* Allocator::allocate(uint64_t size)
     _last = (char*)(_last) + 0x1000;
     return _last;
 }
+
+void* Allocator::reallocate(void* n, uint64_t)
+{
+    return n;
+}
+
+void* Allocator::copy(void* o, uint64_t size)
+{
+    char* n = (char*)(allocate(size));
+    uint64_t i;
+    for(i = 0; i < size; ++i)
+    {
+        n[i] = ((char*)(o))[i];
+    }
+    return n;
+}

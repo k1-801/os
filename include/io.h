@@ -8,7 +8,9 @@ typedef unsigned char byte;
 typedef unsigned short word;
 typedef unsigned int dword;
 typedef unsigned long long int qword;
-const char* scancode = "   1234567890-=^^qwertyuiop[]\n^asdfghjkl;'`  zxcvbnm,./^*^   ^^^^^^^^^^^^^^789-456+1230.^^   !@#$%^&*()_+^^QWERTYUIOP{}\n^ASDFGHJKL:'^  ZXCVBNM<>?^*^   ^^^^^^^^^^^^^^&*(_$%^+!@#)>^^";
+
+extern const char* scancode;
+
 inline byte inb(word port)
 {
    byte r;

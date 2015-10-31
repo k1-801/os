@@ -170,6 +170,8 @@ const char *turnoff = "0000000000000000\
 0000000000000000\
 ";
 
+const char* scancode = "   1234567890-=^^qwertyuiop[]\n^asdfghjkl;'`  zxcvbnm,./^*^   ^^^^^^^^^^^^^^789-456+1230.^^   !@#$%^&*()_+^^QWERTYUIOP{}\n^ASDFGHJKL:'^  ZXCVBNM<>?^*^   ^^^^^^^^^^^^^^&*(_$%^+!@#)>^^";
+
 //VGA register structure
 uint8_t PAL16[48]=
 {

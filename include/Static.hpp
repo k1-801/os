@@ -15,6 +15,8 @@ extern const char *roundRT_1;
 extern const char *roundLB_1;
 extern const char *roundRB_1;
 
+extern const char* scancode;
+
 extern uint8_t PAL16[48];
 
 // Horizontal

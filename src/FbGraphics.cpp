@@ -706,15 +706,17 @@ uint8_t *vram=(uint8_t*)0xA0000;
    }
    //Job done.
    return;*/
-  uint32_t fbpitch;
-  uint8_t fbbpp;
-inline void VGAPix16(uint64_t x, uint64_t y, uint32_t color)
+uint32_t fbpitch;
+uint8_t fbbpp;
+
+void VGAPix16(uint64_t x, uint64_t y, uint32_t color)
 {
 	unsigned where = x*(fbbpp/8) + y*fbpitch;
 	framebuffer[where] = color;              // BLUE
     framebuffer[where + 1] = (color >> 8);   // GREEN
     framebuffer[where + 2] = (color >> 16);  // RED
 }
+
 bool changed=false;
 void vgaPutchar(char c, uint64_t x, uint64_t y,uint32_t fg, uint32_t bg, bool dnf)
 {
@@ -762,7 +764,7 @@ void vgaWriteStr(uint64_t x, uint64_t y, const char * str, uint32_t fg, uint32_t
         vgaPutchar(str[i], x + i * 8, y, fg, bg);
 	}
 }
-void vgaWriteStr(word x,word y,const char * str,uint32_t fg,uint32_t bg, bool dnf)
+void vgaWriteStr(uint64_t x, uint64_t y, const char* str, uint32_t fg, uint32_t bg, bool dnf)
 {
     int i;
     for(i = 0; str[i]; ++i)
@@ -824,7 +826,7 @@ void fillRect(uint64_t w, uint64_t h, uint64_t x_, uint64_t y_, uint32_t color)
 	}
 }
 
-inline void drawGradient(uint64_t x, uint64_t y, uint64_t x2, uint64_t y2, uint32_t c1, uint32_t c2, bool rev)
+void drawGradient(uint64_t x, uint64_t y, uint64_t x2, uint64_t y2, uint32_t c1, uint32_t c2, bool rev)
 {
     if(!rev)
     {
