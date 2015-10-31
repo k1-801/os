@@ -45,10 +45,10 @@ namespace Hcl
     Color operator + (const Color& a, const Color& b)
     {
         Color result;
-        result.a = Max(a.a, b.a);
-        result.r = a.r * a.a * (1 - b.a) + b.r * b.a;
-        result.g = a.g * a.g * (1 - b.g) + b.g * b.a;
-        result.b = a.b * a.b * (1 - b.b) + b.b * b.a;
+        result.r = a.r * (1 - b.a) + b.r * b.a;
+        result.g = a.g * (1 - b.a) + b.g * b.a;
+        result.b = a.b * (1 - b.a) + b.b * b.a;
+        result.a = a.a * (1 - a.a) + b.a * b.a;
         return result;
     }
 }
