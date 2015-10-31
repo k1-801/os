@@ -6,6 +6,7 @@
 // All of the contents is DEPRECATED
 
 #include "HCL/Std.hpp"
+#include "HCL/Surface.hpp"
 #include "mboot.h"
 
 //constants
@@ -81,6 +82,17 @@
 #define VGA__DAC_DATA 0x3c9    //pallete, data
 #define VGA__DAC_MASK 0x3c6    //pallete, bit mask
 
+class FbGraphics
+{
+    private:
+        void* _fb; // framebuffer
+        Hcl::Surface draw;
+
+    public:
+        void append(const Hcl::Surface&);
+        void swap();
+};
+
 // from graphics.h - remove
 typedef enum
 {
@@ -115,7 +127,6 @@ typedef struct
 extern bool textMode;
 extern bool settedMode;
 extern bool mSet;
-extern const char* bitmap;
 extern vbe_info_t vbeMode;
 
 extern uint8_t *framebuffer;

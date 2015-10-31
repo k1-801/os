@@ -13,11 +13,11 @@
 
 #include "Color.hpp"
 #include "Std.hpp"
-
-typedef Vector<Color> SurfaceRow;
+#include "Vector.hpp"
 
 namespace Hcl
 {
+    typedef Vector<Color> SurfaceRow;
     class SurfaceData
     {
         private:
@@ -28,9 +28,14 @@ namespace Hcl
 
             uint64_t getHeight();
             uint64_t getWidth();
+
+            void resize(uint64_t, uint64_t);
+            void resize(uint64_t, uint64_t, const Color&);
             
-            ;
-    }
+            Color&      at        (uint64_t, uint64_t);
+            SurfaceRow& at        (uint64_t);
+            SurfaceRow& operator[](uint64_t);
+    };
 }
 
 #endif // HCL_SURFACEDATA_HPP

@@ -1014,7 +1014,7 @@ void graphicsEdit()
 			case 0x50: if(y <= 571) y++; break;
 			case 0x4D: if(x <= 990) x++; break;
 			case 0x4B: if(x >= 0) x--; break;
-			case 0x39: VGAPix16(os365brush.x+5+x,os365brush.y+21+y,color,640,480); break;
+			case 0x39: VGAPix16(os365brush.x+5+x,os365brush.y+21+y,color); break;
 			case 0x2E: 			
 			do{
 				if(inb(0x60)!=c){

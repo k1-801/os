@@ -31,10 +31,10 @@ namespace Hcl
             
             void resize(uint64_t, uint64_t);
             void apply(const Surface&, uint64_t, uint64_t);
-            
-            Color& at();
-            Color& operator[]();
-    }
+
+            // use as surf[x][y];
+            SurfaceRow& operator[](uint64_t);
+    };
 }
 
 #endif // HCL_BITMAP_HPP
