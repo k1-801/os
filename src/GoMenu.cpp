@@ -70,15 +70,23 @@ void GoMenu::addEntry(GoMenuEntry& en)
     else
         _c[en.uid] = en;*/
     uint64_t i;
-    for(i = 0; i < _c.getSize() + 1; ++i)
+    for(i = 0; i < _c.data + 1; ++i)
     {
-        vgaWriteStr(500 + i * 8, 400, " ", MAGENTA, BROWN);
+        vgaWriteStr(500 + i * 8, 400, "_", MAGENTA, BROWN);
     }
 
     _c.pushBack(en);
     
-    for(i = 0; i < _c.getSize() + 1; ++i)
+    for(i = 0; i < _c.data->_begin + 1; ++i)
     {
-        vgaWriteStr(500 + i * 8, 500, " ", MAGENTA, BROWN);
+        vgaWriteStr(500 + i * 8, 500, "!", MAGENTA, BROWN);
+    }
+    for(i = 0; i < _c.data->_end + 1; ++i)
+    {
+        vgaWriteStr(500 + i * 8, 550, "!", MAGENTA, BROWN);
+    }
+    for(i = 0; i < _c.data->_endall + 1; ++i)
+    {
+        vgaWriteStr(500 + i * 8, 600, "!", MAGENTA, BROWN);
     }
 }

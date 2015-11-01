@@ -19,7 +19,8 @@ namespace Hcl
     template<class T>
     class VectorData
     {
-        private:
+        //private:
+        public:
             T* _begin;
             T* _end;
             T* _endall;
