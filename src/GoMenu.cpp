@@ -35,17 +35,17 @@ void GoMenu::main()
         c = inb(0x64);
         switch(c)
         {
-            case 0x48:
+            case 0x48: // UP
                 if(s)
                     --s;
                 break;
-            case 0x50:
+            case 0x50: // DOWN
                 if(s < _c.getSize() - 1)
                     ++s;
                 break;
-            case 0x28:
+            case 0x28: // ENTER
                 en = &_c[s];
-            case 0x1:
+            case '\e': // ESCAPE
                 run = false;
                 break;
         }

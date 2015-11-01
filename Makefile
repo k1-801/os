@@ -26,6 +26,7 @@ SOURCES=gdt.asm \
 	paging.s \
 	kernel.cpp \
 	fonts.cpp \
+	user.cpp \
 	\
 	Allocator.cpp \
 	FbGraphics.cpp \

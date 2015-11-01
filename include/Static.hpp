@@ -15,7 +15,10 @@ extern const char *roundRT_1;
 extern const char *roundLB_1;
 extern const char *roundRB_1;
 
+extern const char* turnoff;
+
 extern const char* scancode;
+extern const char* OS365Logo;
 
 extern uint8_t PAL16[48];
 

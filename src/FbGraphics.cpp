@@ -720,41 +720,19 @@ void VGAPix16(uint64_t x, uint64_t y, uint32_t color)
 bool changed=false;
 void vgaPutchar(char c, uint64_t x, uint64_t y,uint32_t fg, uint32_t bg, bool dnf)
 {
-	int i,j;
-	i = 0;
-	j = 0;
-/*	if(c=='@')
-	{
-		setupFonts();
-		c=' ';
-	}
-	if(c=='|')
-	{
-		setRusFonts();
-		c=' ';
-	}*/
-	if(c=='\b')
-	x-=8;
-	int count = 0;
-	while(i != 8)
-	{
-		j = 0;
-		while(j != 8)
-		{
-			if(font[(word)c][count] == '1')
-			{
-				VGAPix16(x+j,y+i,fg);
-			}
-			else
-			{
-				//if(!dnf)
-				//VGAPix16(x+j,y+i,bg);
-			}
-			j++;
-			count++;
-		}
-		i++;
-	}
+    int i, j, count = 0;
+    for(i = 0; i < 8; ++i)
+    {
+        for(j = 0; j < 8; ++j)
+        {
+            if(font[(uint32_t)c][count] == '1')
+                VGAPix16(x + j, y + i, fg);
+            else
+                if(!dnf)
+                    VGAPix16(x + j, y + i, bg);
+            ++count;
+        }
+    }
 }
 void vgaWriteStr(uint64_t x, uint64_t y, const char * str, uint32_t fg, uint32_t bg)
 {

@@ -5,7 +5,7 @@
 // I have no idea where should it be defined, so I redefined it temporarily
 #define BGCOLOR BLACK
 
-Window::Window(const char* _t, uint64_t _x, uint64_t _y, uint64_t _h, uint64_t _w)
+Window::Window(const char* _t, uint64_t _x, uint64_t _y, uint64_t _w, uint64_t _h)
 {
     title  = _t;
     x      = _x;
@@ -44,7 +44,7 @@ bool drawObj(Window* target, uint32_t color, uint32_t captColor)
     drawBitmap(roundRB, target->x+1+target->width-16, target->y+target->height-16, 16, 16, BGCOLOR,     color, DARK_GREY, 0, 0, true);
 
     vLine(target->x,target->y+16,target->width,DARK_GREY);
-    vgaWriteStr(target->x+5,target->y+5,target->title,LIGHT_GREEN,captColor);
+    vgaWriteStr(target->x+5,target->y+5,target->title, LIGHT_GREEN, captColor);
     //vgaWriteStr(target->x+5,target->y+21,target->text,MAGENTA,color);
 }
 
@@ -84,15 +84,15 @@ bool drawObj(Window* target, bool noBtmCrn)
     hLine(target->x+2,              target->y+16,               target->height-32, DARK_GREY);
     hLine(target->x+target->width-1,target->y+16,               target->height-32, DARK_GREY);
 
-    drawBitmap(roundLT,target->x+1,target->y,16,16,BGCOLOR,LIGHT_BLUE,DARK_GREY,0,0,true);
-    drawBitmap(roundRT,target->x+1+target->width-16,target->y,16,16, BGCOLOR, LIGHT_BLUE,DARK_GREY,0,0,true);
+    drawBitmap(roundLT,target->x+1,target->y,16,16,BGCOLOR, LIGHT_GREEN, DARK_GREY,0,0,true);
+    drawBitmap(roundRT,target->x+1+target->width-16,target->y,16,16, BGCOLOR, LIGHT_GREEN, DARK_GREY,0,0,true);
     if(noBtmCrn)
     {
-        drawBitmap(roundLB,target->x+1,target->y+target->height-16,16,16,BGCOLOR,LIGHT_GREY,DARK_GREY,0,0,true);
-        drawBitmap(roundRB,target->x+1+target->width-16,target->y+target->height-16,16,16,BGCOLOR,LIGHT_GREY,DARK_GREY,0,0,true);
+        drawBitmap(roundLB,target->x+1,target->y+target->height-16,16,16,BGCOLOR, LIGHT_GREY,DARK_GREY,0,0,true);
+        drawBitmap(roundRB,target->x+1+target->width-16,target->y+target->height-16,16,16,BGCOLOR, LIGHT_GREY,DARK_GREY,0,0,true);
     }
     vLine(target->x,target->y+16,target->width,DARK_GREY);
-    vgaWriteStr(target->x+5,target->y+5,target->title,LIGHT_GREEN,LIGHT_BLUE);
+    vgaWriteStr(target->x+5,target->y+5,target->title,LIGHT_BLUE,LIGHT_GREEN);
     //vgaWriteStr(target->x+5,target->y+21,target->text,MAGENTA,LIGHT_GREY);
 
 }
