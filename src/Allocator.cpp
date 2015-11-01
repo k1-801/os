@@ -17,9 +17,12 @@ void* Allocator::allocate(uint64_t size)
     return _last;
 }
 
-void* Allocator::reallocate(void* n, uint64_t)
+void* Allocator::reallocate(void* n, uint64_t s)
 {
-    return n;
+    if(n)
+        return n;
+    else
+        return allocate(s);
 }
 
 void* Allocator::copy(void* o, uint64_t size)

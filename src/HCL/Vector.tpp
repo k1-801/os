@@ -3,7 +3,10 @@
 namespace Hcl
 {
     template <class T>
-    Vector<T>::Vector(){}
+    Vector<T>::Vector()
+    {
+        data = 0;
+    }
     template <class T>
     Vector<T>::Vector(uint64_t n)
     {
@@ -27,6 +30,8 @@ namespace Hcl
         if(!data)
         {
             data = (VectorData<T>*)(allocator->allocate(sizeof(VectorData<T>)));
+            data->clear();
+            data->refs = 1;
         }
         if(data->refs > 1)
         {

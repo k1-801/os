@@ -55,7 +55,7 @@ bool drawObj(Window* target, bool noBtmCrn)
 	fillRect(16,target->height-32,target->x,target->y+16,LIGHT_GREY);
 	fillRect(16,target->height-32,target->x+(target->width-16),target->y+16,LIGHT_GREY);
 	fillRect(target->width-32,16,target->x+16,target->y+(target->height-16),LIGHT_GREY);
-	fillRect(target->width-32,16,target->x+16,target->y,LIGHT_BLUE);
+	fillRect(target->width-32,16,target->x+16,target->y,LIGHT_GREEN);
 	//drawGradient(target->x,target->y,target->x+target->width,target->y+16,0x000000,0xFF0000);
 	if(!noBtmCrn)
 	{
@@ -64,9 +64,9 @@ bool drawObj(Window* target, bool noBtmCrn)
 		vLine(target->x,target->y+target->height-1,target->width-2,DARK_GREY);
 		hLine(target->x+2,target->y+16,target->height-16,DARK_GREY);
 		hLine(target->x+1,target->y+16,target->height-16,DARK_GREY);
-			hLine(target->x+target->width,target->y+16,target->height-17,DARK_GREY);
+        hLine(target->x+target->width,target->y+16,target->height-17,DARK_GREY);
 			
-			hLine(target->x+target->width-1,target->y+16,target->height-17,DARK_GREY);
+        hLine(target->x+target->width-1,target->y+16,target->height-17,DARK_GREY);
 
 	}
 	//drawRect(target->width,target->height,target->x,target->y,BLACK);
@@ -88,8 +88,8 @@ bool drawObj(Window* target, bool noBtmCrn)
     drawBitmap(roundRT,target->x+1+target->width-16,target->y,16,16, BGCOLOR, LIGHT_GREEN, DARK_GREY,0,0,true);
     if(noBtmCrn)
     {
-        drawBitmap(roundLB,target->x+1,target->y+target->height-16,16,16,BGCOLOR, LIGHT_GREY,DARK_GREY,0,0,true);
-        drawBitmap(roundRB,target->x+1+target->width-16,target->y+target->height-16,16,16,BGCOLOR, LIGHT_GREY,DARK_GREY,0,0,true);
+        drawBitmap(roundLB,target->x+1,                  target->y+target->height-16, 16, 16,BGCOLOR, LIGHT_GREY, DARK_GREY,0,0,true);
+        drawBitmap(roundRB,target->x+1+target->width-16, target->y+target->height-16, 16, 16,BGCOLOR, LIGHT_GREY, DARK_GREY,0,0,true);
     }
     vLine(target->x,target->y+16,target->width,DARK_GREY);
     vgaWriteStr(target->x+5,target->y+5,target->title,LIGHT_BLUE,LIGHT_GREEN);

@@ -1242,7 +1242,7 @@ void startZ(bool startwin)
     
     // TEMP
     GoMenuEntry en;
-    en.title = "Text editor";
+    en.name = "Text editor";
     en.callback = &textEdit;
     GoMenu::addEntry(en);
     
@@ -1250,11 +1250,11 @@ void startZ(bool startwin)
 	{
 		if(inb(0x60)!=c)
 		{
-			c = inb(0x60);
-			if(c == 29)
-			{
-				gomenu();
-			}
+            c = inb(0x60);
+            if(c == 29)
+            {
+                gomenu();
+            }
 			if(c == charToScancode(desktopTranslate('a')))
 			{
 				authors();
@@ -1309,9 +1309,9 @@ void startZ(bool startwin)
 				startCLI();
 			}*/
 
-		}
-	}    
-	while(true);
+        }
+    }
+    while(true);
 //	waitForKey(29);
 }
 /*void zwin_start()

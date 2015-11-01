@@ -3,9 +3,16 @@
 namespace Hcl
 {
     template <class T>
+    VectorData<T>::VectorData()
+    {
+        clear();
+        refs = 0;
+    }
+    
+    template <class T>
     uint64_t VectorData<T>::getSize() const
     {
-        return _end - _begin;
+        return (_end - _begin);
     }
     
     template <class T>
@@ -36,8 +43,8 @@ namespace Hcl
         if(c < n)
         {
             realloc(n);
-            for(i = c; i < n; ++i)
-                _begin[i].T();
+            //for(i = c; i < n; ++i)
+                //_begin[i].T();
         }
         else
             for(i = c; i >= n; --i)
@@ -48,12 +55,19 @@ namespace Hcl
     template <class T>
     void VectorData<T>::pushBack(const T& e)
     {
-        if(_end == _endall)
-            realloc((_end - _begin) * 2);
+        resize((_end - _begin) * 2);
+        //if(_end == _endall)
+        //    realloc((_end - _begin) * 2);
         /// Have to choose one
         *(_end) = e;
         //_end->T(e);
         ++_end;
+    }
+    
+    template <class T>
+    void VectorData<T>::clear()
+    {
+        ;
     }
     
     template <class T>

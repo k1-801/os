@@ -27,6 +27,7 @@ namespace Hcl
         public:
             uint64_t refs;
 
+            VectorData();
             uint64_t getSize() const;
             uint64_t getAlloc() const;
             bool isEmpty() const;
