@@ -44,7 +44,6 @@ void panic(const char* msg)
 //vgaWriteStr(240,24,itoa(eax),LIGHT_RED,BLACK);
 
 	//displaying the regs
-	panic("");
 	for(;;)
 	{
 		asm("hlt");

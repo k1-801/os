@@ -14,7 +14,7 @@ namespace Hcl
     template <class T>
     uint64_t VectorData<T>::getSize() const
     {
-        log("VectorData::getSize()");
+        log("[VectorData] getSize");
         return _end - _begin;
     }
     
@@ -33,7 +33,7 @@ namespace Hcl
     template <class T>
     void VectorData<T>::realloc(uint64_t n)
     {
-        log("VectorData::realloc()");
+        log("[VectorData] realloc");
         if(n > _end - _begin)
         {
             allocator->reallocate(_begin, n * sizeof(T));
@@ -45,7 +45,7 @@ namespace Hcl
     template <class T>
     void VectorData<T>::resize(uint64_t n)
     {
-        log("VectorData::resize()");
+        log("[VectorData]: resize");
         uint64_t c = _end - _begin, i;
         if(c == n)
             return;
@@ -64,7 +64,7 @@ namespace Hcl
     template <class T>
     void VectorData<T>::pushBack(const T& e)
     {
-        log("VectorData::pushBack()");
+        log("[VectorData]: pushBack");
         resize((_end - _begin) * 2);
         //if(_end == _endall)
         //    realloc((_end - _begin) * 2);
@@ -77,7 +77,7 @@ namespace Hcl
     template <class T>
     void VectorData<T>::clear()
     {
-        //log("VectorData::clear()");
+        log("[VectorData] clear");
         _begin = 0;
         _end = 0;
         _endall = 0;

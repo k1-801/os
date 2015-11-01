@@ -1255,6 +1255,10 @@ void startZ(bool startwin)
             {
                 gomenu();
             }
+            if(c == charToScancode('d'))
+			{
+				showLogs();
+			}
 			if(c == charToScancode(desktopTranslate('a')))
 			{
 				authors();
