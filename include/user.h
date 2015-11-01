@@ -671,7 +671,7 @@ void about()
 		//vgaWriteStr(info.x+45,info.y+21,":",MAGENTA,LIGHT_GREY);
 		//vgaWriteStr(info.x+53,info.y+21,itoa(second),MAGENTA,LIGHT_GREY);
 	drawBitmap(OS365Logo,40+150+5,30+32,40,40,BLACK,LIGHT_BROWN,LIGHT_GREY,BROWN,0);
-	drawBitmap(OS365Logo,40+150+40+5,30+32,40,40,BLACK,LIGHT_BROWN,LIGHT_GREY,BROWN,BLACK);
+	drawBitmap(OS365Logo,40+150+48+5,30+32,40,40,BLACK,LIGHT_BROWN,LIGHT_GREY,BROWN,BLACK);
 	waitForKey(0x2D);
 	//clock();
 	delWin(&info);
@@ -1239,6 +1239,13 @@ void startZ(bool startwin)
 			drawmain();
 		drawDesktop();
 	char c;
+    
+    // TEMP
+    GoMenuEntry en;
+    en.title = "Text editor";
+    en.callback = &textEdit;
+    GoMenu::addEntry(en);
+    
 	do
 	{
 		if(inb(0x60)!=c)
